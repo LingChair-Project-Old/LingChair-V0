@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"/>
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+    <!-- MDUI CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css"/>
+    <title>铃之椅 API测试</title>
+  </head>
+  <body>
+    
+    <button id="s" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">send</button>
+
+    <div class="mdui-textfield">
+      <input id="i" class="mdui-textfield-input" type="text" placeholder="API Name"/>
+    </div>
+
+    <div class="mdui-textfield">
+      <textarea id="sz" class="mdui-textfield-input" placeholder="Args"></textarea>
+    </div>
+
+    <!-- MDUI JavaScript -->
+    <script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://unpkg.com/socket.io-client@4.7.4/dist/socket.io.min.js"></script>
+    <script>
+      const c = io("ws://localhost:3601")
+      let i = document.getElementById("i")
+      let sz = document.getElementById("sz")
+      document.getElementById("s").onclick = () => {
+        c.emit(i.value,JSON.parse(sz.value), (repo) => {
+          alert(JSON.stringify(repo))
+        })
+      }
+      // c.onAny((name,...args) => {alert(name + " -> called with -> " + JSON.stringify(args))})
+    </script>
+  </body>
+</html>

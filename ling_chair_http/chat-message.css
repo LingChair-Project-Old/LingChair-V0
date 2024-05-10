@@ -1,0 +1,85 @@
+/*
+ * 铃之椅 - 把选择权还给用户, 让聊天权掌握在用户手中
+ * Copyright 2024 满月叶
+ * GitHub: https://github.com/MoonLeeeaf/LingChair-Web-Client
+ * 本项目使用 Apache 2.0 协议开源
+ * 
+ * Copyright 2024 MoonLeeeaf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.chat-message-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin: 13px;
+}
+
+.chat-message-left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: 13px;
+}
+
+.message-content {
+    margin-top: 13px;
+    margin-bottom: 7px;
+    margin-left: 5px;
+    margin-right: 5px;
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-all;
+    font-size: medium;
+    /* 使用了 CardView 就不需要边框了 */
+    /* border: 1.3px solid; */
+    padding: 15px;
+    border-radius: 15px;
+    /* 添加圆角样式 */
+    /* 设置外边距为 7px */
+}
+
+.message-content-with-nickname-right {
+    display: flex;
+    align-items: center;
+    margin: 7px;
+    flex-direction: column;
+    /* 垂直排列元素 */
+    align-items: flex-end;
+    /* 左对齐元素 */
+}
+
+.message-content-with-nickname-left {
+    display: flex;
+    align-items: center;
+    margin: 7px;
+    flex-direction: column;
+    /* 垂直排列元素 */
+    align-items: flex-start;
+    /* 左对齐元素 */
+}
+
+.chat-message-left .message-content-with-nickname-left .nickname,
+.chat-message-right .message-content-with-nickname-right .nickname {
+    margin-right: 5px;
+    font-size: medium;
+    margin-top: 3px;
+}
+
+.chat-message-left > .avatar,
+.chat-message-right > .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
