@@ -1,8 +1,8 @@
 {
   "name": "LingChair",
   "description": "A simple, lightweight and powerful Instant Messaging application.",
-  "version": "0.6.0",
-  "license": "Apache 2.0",
+  "version": "0.6.1",
+  "license": "Apache License 2.0",
   "author": {
     "name": "MoonLeeeaf",
     "url": "https://github.com/MoonLeeeaf"
