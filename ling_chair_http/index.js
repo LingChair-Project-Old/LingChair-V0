@@ -691,7 +691,7 @@ if (!localStorage.refreshToken || localStorage.refreshToken === "")
 
 let client
 function setUpClient(server) {
-    if (server)
+    if (server && server !== "")
         client = new io(server, {
             auth: {
                 name: localStorage.isSignIn === "false" ? null : localStorage.userName

@@ -170,7 +170,7 @@
           <i class="mdui-icon material-icons">cloud_circle</i>
           <label class="mdui-textfield-label">服务器地址</label>
           <input n-id="dialogSignInServer" class="mdui-textfield-input" type="text" placeholder="留空以使用网页所在地址"
-            n-input-ls="server" onblur="" />
+            n-input-ls="server" n-id="dialogSignServer" onblur="setupClient(viewBinding.dialogSignServer.val())" />
         </div>
         <div class="mdui-textfield">
           <i class="mdui-icon material-icons">account_circle</i>
