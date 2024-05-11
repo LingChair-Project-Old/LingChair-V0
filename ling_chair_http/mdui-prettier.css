@@ -21,15 +21,18 @@ body {
 .mdui-menu-item > a {
     padding-right: 3px;
 }
-.mdui-dialog-actions a,
-.mdui-dialog-actions button {
-    border-radius: 40px;
-}
-.mdui-btn {
+.mdui-btn:not(.mdui-btn-icon, .mdui-dialog-actions button, .mdui-dialog-actions a) {
     padding-left: 20px;
     padding-right: 20px;
     height: 40px;
     border-radius: 10px;
+}
+.mdui-dialog-actions a,
+.mdui-dialog-actions button {
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 40px;
+    border-radius: 40px;
 }
 
 /* 配色方案 */

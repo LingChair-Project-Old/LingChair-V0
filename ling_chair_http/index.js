@@ -21,6 +21,28 @@
 
 const UrlArgs = new URL(location.href).searchParams
 
+function setOnRightClick(e, cb) {
+    if (!(e instanceof jQuery))
+        e = $(e)
+
+    let longPressTimer
+    if (!cb) throw new Error("定义回调!!!!")
+    e.on('contextmenu', function (e) {
+        e.preventDefault() // 阻止默认右键菜单
+        cb()
+    })
+
+    e.on('mousedown', function () {
+        longPressTimer = setTimeout(function () {
+            cb()
+        }, 1000)
+    })
+
+    e.on('mouseup', function () {
+        clearTimeout(longPressTimer)
+    });
+}
+
 if (UrlArgs.get("debug")) {
     let script = document.createElement('script')
     script.src = "//cdn.jsdelivr.net/npm/eruda"
@@ -130,10 +152,7 @@ viewBinding.drawerChangeServer.click(() => {
 
 viewBinding.drawerSignOut.click(() => {
     mdui.confirm('确定要登出账号吗', () => {
-        localStorage.refreshToken = ""
-        localStorage.isSignIn = false
-
-        setTimeout(() => location.reload(), 300)
+        User.signOutAndReload()
     }, () => { }, {
         confirmText: "确定",
         cancelText: "取消"
@@ -157,16 +176,25 @@ viewBinding.dialogSignInPasswd.keydown((e) => {
 })
 
 viewBinding.switchNotifications.click((a) => {
-    if (localStorage.useNotifications === "true" || localStorage.useNotifications != null) {
-        localStorage.useNotifications = false
+    if ((localStorage.useNotifications == "true" || localStorage.useNotifications != null) && localStorage.useNotifications != "false") {
+        localStorage.useNotifications = "false"
         viewBinding.switchNotificationsIcon.text("notifications_off")
     } else {
-        localStorage.useNotifications = true
+        localStorage.useNotifications = "true"
         viewBinding.switchNotificationsIcon.text("notifications")
     }
 })
-if (localStorage.useNotifications === "true")
+if (localStorage.useNotifications == "true")
     viewBinding.switchNotificationsIcon.text("notifications")
+
+// https://www.runoob.com/w3cnote/javascript-copy-clipboard.html
+function copyText(t) {
+    let cp = viewBinding.textCopier.get(0)
+    cp.value = t
+    cp.select()
+    cp.setSelectionRange(0, 99999)
+    navigator.clipboard.writeText(cp.value)
+}
 
 // https://zhuanlan.zhihu.com/p/162910462
 Date.prototype.format = function (tms, format) {
@@ -335,7 +363,7 @@ class ChatMsgAdapter {
             // 错了 应该是客户端少发条才对 不然不能多设备同步
             if (ChatMsgAdapter.target !== localStorage.userName && ChatMsgAdapter.type === "single") {
                 let i = ChatMsgAdapter.isAtBottom()
-                await ChatMsgAdapter.addMsg(localStorage.userName, msg, re.data.time)
+                await ChatMsgAdapter.addMsg(localStorage.userName, msg, re.data.time, re.data.msgid)
                 if (i) ChatMsgAdapter.scrollToBottom()
             }
         })
@@ -367,9 +395,9 @@ class ChatMsgAdapter {
         if (re) histroy = histroy.reverse()
         for (let index in histroy) {
             let i = histroy[index]
-            let e = await this.addMsg(i.name, i.msg, i.time, re, true)
+            let e = await this.addMsg(i.name, i.msg, i.time, re, i.msgid)
             // 因为某些因素直接DEBUG到吐血 断点继续都不报错 原因不明
-            sc = sc + (e == null ? 20 : e.get(0).offsetTop)
+            sc = sc + (e == null ? 25 : e.get(0).offsetTop)
         }
         window.scrollBy({
             top: sc,
@@ -385,11 +413,11 @@ class ChatMsgAdapter {
         return e
     }
     static isAtBottom() {
-        let elementRect = viewBinding.pageChatSeesion.get(0).getBoundingClientRect();
-        return (elementRect.bottom <= window.innerHeight);
+        let elementRect = viewBinding.pageChatSeesion.get(0).getBoundingClientRect()
+        return (elementRect.bottom <= window.innerHeight)
     }
     // 不会压栈 只添加消息 返回消息的JQ对象
-    static async addMsg(name, m, t, re) {
+    static async addMsg(name, m, t, re, msgid) {
 
         let nick = await NickCache.getNick(name) // re.data == null ? name : re.data.nick
 
@@ -400,8 +428,8 @@ class ChatMsgAdapter {
             temp = `<div class="chat-message-right">
                 <div class="message-content-with-nickname-right">
                 <span class="nickname">` + nick + `</span>
-                <div class="message-content mdui-card">
-                <span>` + msg + `</span>
+                <div class="message-content mdui-card" id="msgid_` + msgid + `">
+                <span id="msg-content">` + msg + `</span>
                 </div>
                 </div>
                 <img class="avatar" src="` + User.getUserHeadUrl(name) + `" onerror="this.src='default_head.png'" />
@@ -411,8 +439,8 @@ class ChatMsgAdapter {
                 <img class="avatar" src="` + User.getUserHeadUrl(name) + `" onerror="this.src='default_head.png'" />
                 <div class="message-content-with-nickname-left">
                 <span class="nickname">` + nick + `</span>
-                <div class="message-content mdui-card">
-                <span>` + msg + `</span>
+                <div class="message-content mdui-card" id="msgid_` + msgid + `">
+                <span id="msg-content">` + msg + `</span>
                 </div>
                 </div>
                 </div>`
@@ -477,6 +505,58 @@ class ChatMsgAdapter {
     static saveToLocal() {
         localStorage["chat_msg_" + this.target] = JSON.stringify(this.msgList)
     }*/
+    // 为消息设置长按/右键事件
+    static initMsgElementEvents() {
+        let listeners = {}
+        let menu
+        let callback = (e) => {
+            if (menu) menu.close()
+            // 从 span 切到 div
+            if (e.get(0).tagName.toLowerCase() != "div") e = $(e.get(0).parentNode)
+            // 从 消息框 切到 更上层
+            e = $(e.get(0).parentNode)
+            let menuHtml = $.parseHTML(`<ul class="mdui-menu menu-on-message">
+            <li class="mdui-menu-item">
+              <a onclick="copyText(\`` + e.find("#msg-content").text() + `\`)" class="mdui-ripple">复制</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a onclick="mdui.alert('未制作功能', '提示', () => { }, { confirmText: '关闭' })" class="mdui-ripple">转发</a>
+            </li>
+            </ul>`)
+            let $menu = $(menuHtml)
+            e.before($menu)
+            menu = new mdui.Menu(e.get(0), menuHtml, {
+                position: "bottom",
+                align: "right",
+                // covered: true,
+            })
+            $menu.on('closed.mdui.menu', () => {
+                $(menuHtml).remove()
+            })
+            menu.open()
+        }
+        viewBinding.pageChatSeesion.on('contextmenu mousedown mouseup', '.message-content', (e) => {
+            let eventType = e.type
+            let self = $(e.target)
+
+            // 根据事件类型执行不同操作
+            switch (eventType) {
+                case 'contextmenu':
+                    e.preventDefault() // 阻止默认行为
+                    callback(self)
+                    break
+                case 'mousedown':
+                    listeners[self + ""] = setTimeout(() => {
+                        callback(self)
+                    }, 300) // 300颗够吗 应该够吧
+                    break
+                case 'mouseup':
+                    clearTimeout(listeners[self + ""])
+                    listeners[self + ""] = null
+                    break
+            }
+        })
+    }
 }
 
 class Hash {
@@ -562,9 +642,23 @@ class User {
         client.emit("user.auth", { name: localStorage.userName, refreshToken: localStorage.refreshToken }, (re) => {
             if (re.code !== 0) {
                 console.error(re)
-                return mdui.snackbar("验证用户失败！")
+                if (!re.invalid)
+                    return mdui.snackbar("验证用户失败！")
+
+                mdui.alert("账号刷新令牌已过期, 请重新登录哦", "提示", () => User.signOutAndReload(), {
+                    confirmText: "确定",
+                    closeOnConfirm: false,
+                    closeOnEsc: false,
+                    modal: true,
+                })
             }
         })
+    }
+    static signOutAndReload() {
+        localStorage.refreshToken = ""
+        localStorage.isSignIn = false
+
+        setTimeout(() => location.reload(), 300)
     }
     static registerCallback() {
         client.on("msg.receive", async (a) => {
@@ -579,7 +673,7 @@ class User {
 
             let n = new 通知().setTitle("新消息 - " + await NickCache.getNick(a.target)).setMessage(a.msg.msg).setIcon(User.getUserHeadUrl(a.target)).show(async () => {
                 await ChatMsgAdapter.switchTo(a.target, a.type)
-                ChatMsgAdapter.scrollToBottom()
+                location.replace("#msgid_" + a.msg.msgid)
                 n.close()
             })
         })
@@ -642,3 +736,5 @@ else {
 
 // 感谢AI的力量
 Stickyfill.add($("*").filter((a, b) => $(b).css('position') === 'sticky'))
+
+ChatMsgAdapter.initMsgElementEvents()

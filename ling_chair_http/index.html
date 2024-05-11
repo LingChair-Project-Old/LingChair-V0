@@ -32,14 +32,14 @@
   <!-- <script src='https://polyfill.io/v3/polyfill.min.js?features=default%2Cdom4%2Ces2015%2Ces2016%2Ces2017%2Ces2018%2Ces2019%2Ces2020%2Ces2021%2Ces2022%2Ces5%2Ces6%2Ces7'></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
 
-  <!-- 代替私人 fixed 并提供更好的兼容性 -->
-  <script src="https://cdn.jsdelivr.net/gh/wilddeer/stickyfill@2.1.0/dist/stickyfill.min.js"></script>
-
   <!-- Styles -->
   <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css" />
   <link rel="stylesheet" href="index.css" />
   <link rel="stylesheet" href="chat-message.css" />
   <link rel="stylesheet" href="mdui-prettier.css" />
+
+  <!-- 代替私人 fixed 并提供更好的兼容性 -->
+  <script src="https://cdn.jsdelivr.net/gh/wilddeer/stickyfill@2.1.0/dist/stickyfill.min.js"></script>
   <script src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js"></script>
   <link rel="icon" href="icon.ico" />
   <title>铃之椅</title>
@@ -48,6 +48,8 @@
 <body
   class="mdui-theme-primary-teal mdui-theme-accent-teal mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-layout-auto"
   id="app">
+
+  <input n-id="textCopier" class="mdui-hidden" />
 
   <div id="lingchair-app" style="height: 100%;">
     <!-- 侧滑栏 -->
@@ -139,7 +141,7 @@
       <!-- 妈的黑化了 私人玩意这么难整 早知道 z-index 弄死它得了 浪费我时间 我就没试过这么离谱的样式表 第三方库真难写CSS 就应该先写后端的 啊啊啊啊啊啊 -->
       <!-- 不黑化了 因为 stickyfill -->
       <div class="mdui-toolbar mdui-theme-color-auto"
-        style="position: sticky;max-width: 100%;margin-bottom: -30px;bottom: 0;">
+        style="position: sticky;max-width: 100%;margin-bottom: -30px;bottom: 0;z-index: 101;">
         <ul class="mdui-menu" id="msg-input-more">
           <li class="mdui-menu-item">
             <a class="mdui-ripple">插入图片</a>

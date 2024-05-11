@@ -9,7 +9,7 @@ const io = require("./iolib")
 let vals = {}
 
 // 配置目录
-vals.LINGCHAIR_CONFIG_DIR = "ling_chair_config"
+vals.LINGCHAIR_CONFIG_DIR = "ling_chair_data"
 // HTTP 服务器资源目录
 vals.LINGCHAIR_HTTP_DIR = "ling_chair_http"
 // 服务端配置

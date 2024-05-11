@@ -46,7 +46,7 @@ let api = {
             return cb({ msg: "参数缺失", code: -1 })
 
         if (!users.checkRefreshToken(a.name, a.refreshToken))
-            return cb({ code: -1, msg: "刷新令牌错误" })
+            return cb({ code: -1, msg: "刷新令牌错误", invalid: true })
 
         log(color.yellow + "客户端 " + client.handshake.address + " 完成了用户 " + a.name + " 的验证" + color.none)
 
@@ -193,7 +193,7 @@ let api = {
                 log("尝试向客户端 " + v.handshake.address + " 发送事件 [msg.receive], 参数为 " + JSON.stringify(args))
             })
 
-        cb({ msg: msg, code: 0, data: { time: time } })
+        cb({ msg: msg, code: 0, data: { time: time, msgid: msgid } })
     },
 
     // 单聊获取历史记录

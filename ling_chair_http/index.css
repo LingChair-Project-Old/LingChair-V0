@@ -39,4 +39,7 @@ body {
     flex: 1;
 }
 
-
+.menu-on-message {
+    margin-top: 60px;
+    z-index: 100;
+}
