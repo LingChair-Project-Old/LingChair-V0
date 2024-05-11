@@ -690,18 +690,28 @@ if (!localStorage.refreshToken || localStorage.refreshToken === "")
     localStorage.isSignIn = false
 
 let client
+function setUpClient(server) {
+    if (server)
+        client = new io(server, {
+            auth: {
+                name: localStorage.isSignIn === "false" ? null : localStorage.userName
+            }
+        })
+    else
+        client = new io({
+            auth: {
+                name: localStorage.isSignIn === "false" ? null : localStorage.userName
+            }
+        })
+
+    client.on("connect", () => {
+        User.auth()
+    })
+}
 if (!localStorage.server || localStorage.server === "")
-    client = new io({
-        auth: {
-            name: localStorage.isSignIn === "false" ? null : localStorage.userName
-        }
-    })
+    setUpClient()
 else
-    client = new io(localStorage.server, {
-        auth: {
-            name: localStorage.isSignIn === "false" ? null : localStorage.userName
-        }
-    })
+    setUpClient(localStorage.server)
 
 // 登录到账号
 let dialogSignIn
@@ -726,10 +736,6 @@ else {
     viewBinding.userHead.attr("src", User.getUserHeadUrl(localStorage.userName))
 
     ContactsList.reloadList()
-
-    client.on("connect", () => {
-        User.auth()
-    })
 
     User.registerCallback()
 }
