@@ -39,45 +39,4 @@ body {
     flex: 1;
 }
 
-/* 美化 MDUI */
-body {
-    font-family: -apple-system, system-ui, -webkit-system-font;
-}
-.round {
-    border-radius: 20px;
-}
-.mdui-dialog {
-    border-radius: 23px;
-}
-.mdui-snackbar {
-    border-radius: 10px;
-}
-.mdui-menu {
-    border-radius: 10px;
-}
-.mdui-menu-item > a {
-    padding-right: 3px;
-}
-.mdui-dialog-actions a,
-.mdui-dialog-actions button {
-    border-radius: 30px;
-    padding: 15px;
-    text-align: center;
-    line-height: 8px;
-}
-.mdui-dialog-actions {
-    margin-right: 7px;
-    margin-top: -7px;
-}
 
-/* 配色方案 */
-
-.mdui-theme-color-auto {
-    background-color: #fff;
-}
-
-@media (prefers-color-scheme: dark) {
-    .mdui-theme-color-auto {
-        background-color: #303030;
-    }
-}
