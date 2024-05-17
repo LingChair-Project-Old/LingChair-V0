@@ -43,3 +43,12 @@ body {
     margin-top: 60px;
     z-index: 100;
 }
+
+[n-id=pageChatSeesion]::after {
+    content: "";
+    position: sticky;
+    bottom: 0;
+    display: block;
+    height: var(--pseudo-height); /* 设置伪元素的高度 */
+    z-index: -1; /* 防止遮挡实际内容 */
+  }

@@ -41,6 +41,7 @@
   <!-- 代替私人 fixed 并提供更好的兼容性 -->
   <script src="https://cdn.jsdelivr.net/gh/wilddeer/stickyfill@2.1.0/dist/stickyfill.min.js"></script>
   <script src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
   <link rel="icon" href="icon.ico" />
   <title>铃之椅</title>
 </head>
@@ -49,7 +50,7 @@
   class="mdui-theme-primary-teal mdui-theme-accent-teal mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-layout-auto"
   id="app">
 
-  <input n-id="textCopier" class="mdui-hidden" />
+  <input n-id="textCopierBtn" class="mdui-hidden" />
 
   <div id="lingchair-app" style="height: 100%;">
     <!-- 侧滑栏 -->
@@ -94,7 +95,10 @@
         <a onclick="ContactsList.reloadList()" n-id="contactsRefresh" class="mdui-btn mdui-btn-icon mdui-ripple">
           <i class="mdui-icon material-icons">refresh</i>
         </a>
-        <a class="mdui-btn mdui-btn-icon mdui-ripple" n-id="switchNotifications" mdui-tooltip="{content:'开/关通知'}">
+        <a onclick="ContactsList.openAddDialog()" n-id="contactsAdd" class="mdui-btn mdui-btn-icon mdui-ripple">
+          <i class="mdui-icon material-icons">add</i>
+        </a>
+        <a class="mdui-btn mdui-btn-icon mdui-ripple" n-id="switchNotifications">
           <i class="mdui-icon material-icons" n-id="switchNotificationsIcon">notifications_off</i>
         </a>
         <a mdui-menu="{target: '#appbar-menu'}" class="mdui-btn mdui-btn-icon mdui-ripple">
@@ -136,7 +140,7 @@
         <div class="mdui-center" style="margin: 15px;"><a href="javascript:;" onclick="ChatMsgAdapter.loadMore()"
             class="mdui-text-color-theme">点我</a>继续加载前面的聊天记录, 或者<a href="javascript:;"
             onclick="ChatMsgAdapter.scrollToBottom()" class="mdui-text-color-theme">回到底部</a></div>
-        <div n-id="pageChatSeesion" style="flex: 1 1 auto;display: flex;flex-direction: column;"></div>
+        <div n-id="pageChatSeesion" style="flex: 1 1 auto;display: flex;flex-direction: column;position: relative;"></div>
       </div>
       <!-- 妈的黑化了 私人玩意这么难整 早知道 z-index 弄死它得了 浪费我时间 我就没试过这么离谱的样式表 第三方库真难写CSS 就应该先写后端的 啊啊啊啊啊啊 -->
       <!-- 不黑化了 因为 stickyfill -->

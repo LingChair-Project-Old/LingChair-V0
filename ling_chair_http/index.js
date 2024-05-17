@@ -189,11 +189,12 @@ if (localStorage.useNotifications == "true")
 
 // https://www.runoob.com/w3cnote/javascript-copy-clipboard.html
 function copyText(t) {
-    let cp = viewBinding.textCopier.get(0)
-    cp.value = t
-    cp.select()
-    cp.setSelectionRange(0, 99999)
-    navigator.clipboard.writeText(cp.value)
+    let btn = viewBinding.textCopierBtn
+    btn.attr("data-clipboard-text", t)
+    new ClipboardJS(btn.get(0)).on('success', (e) => {
+        e.clearSelection()
+    })
+    btn.click()
 }
 
 // https://zhuanlan.zhihu.com/p/162910462
@@ -407,8 +408,10 @@ class ChatMsgAdapter {
     static addSystemMsg(m, re) {
         let e
         if (re)
+            // 加到头部
             e = $($.parseHTML(m)).prependTo(viewBinding.pageChatSeesion)
         else
+            // 加到尾部
             e = $($.parseHTML(m)).appendTo(viewBinding.pageChatSeesion)
         return e
     }
@@ -416,7 +419,8 @@ class ChatMsgAdapter {
         let elementRect = viewBinding.pageChatSeesion.get(0).getBoundingClientRect()
         return (elementRect.bottom <= window.innerHeight)
     }
-    // 不会压栈 只添加消息 返回消息的JQ对象
+    // 添加消息 返回消息的JQ对象
+    // name: 用户id  m: 消息  t: 时间戳  re: 默认加到尾部  msgid: 消息id
     static async addMsg(name, m, t, re, msgid) {
 
         let nick = await NickCache.getNick(name) // re.data == null ? name : re.data.nick
@@ -716,7 +720,7 @@ else
 // 登录到账号
 let dialogSignIn
 // 谨防 localStorage 字符串数据大坑
-if (localStorage.isSignIn === "false")
+if (localStorage.isSignIn == "false")
     dialogSignIn = new mdui.Dialog(viewBinding.dialogSignIn.get(0), {
         modal: true,
         closeOnEsc: false,
