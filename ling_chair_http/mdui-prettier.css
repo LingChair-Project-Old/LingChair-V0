@@ -34,6 +34,9 @@ body {
     height: 40px;
     border-radius: 40px;
 }
+.mdui-select-open {
+    border-radius: 10px;
+}
 
 /* 配色方案 */
 

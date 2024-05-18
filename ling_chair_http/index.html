@@ -67,6 +67,10 @@
           <i class="mdui-list-item-icon mdui-icon material-icons">account_circle</i>
           <div class="mdui-list-item-content">资料</div>
         </li>
+        <li class="mdui-list-item mdui-ripple" onclick="new mdui.Dialog(viewBinding.dialogMyProfile.get(0)).open()">
+          <i class="mdui-list-item-icon mdui-icon material-icons">person_add</i>
+          <div class="mdui-list-item-content">新的好友</div>
+        </li>
         <li class="mdui-subheader">客户端</li>
         <li class="mdui-list-item mdui-ripple">
           <i class="mdui-list-item-icon mdui-icon material-icons">settings</i>
@@ -114,7 +118,7 @@
 
     <!-- Tab 栏 -->
     <div class="mdui-tab mdui-accent-theme mdui-theme-color-auto" style="position: fixed; z-index: 114;width: 100%;"
-      mdui-tab>
+      mdui-tab n-id="chatTab">
       <!-- 侧滑栏的 z-index 是2000, 在移动端会直接覆盖 -->
       <a href="#page-chat-list" n-id="tabChatList" class="mdui-ripple">常用</a>
       <a href="#page-contacts" n-id="tabContacts" class="mdui-ripple">通讯录</a>
@@ -140,12 +144,14 @@
         <div class="mdui-center" style="margin: 15px;"><a href="javascript:;" onclick="ChatMsgAdapter.loadMore()"
             class="mdui-text-color-theme">点我</a>继续加载前面的聊天记录, 或者<a href="javascript:;"
             onclick="ChatMsgAdapter.scrollToBottom()" class="mdui-text-color-theme">回到底部</a></div>
-        <div n-id="pageChatSeesion" style="flex: 1 1 auto;display: flex;flex-direction: column;position: relative;"></div>
+        <div n-id="pageChatSeesion" style="flex: 1 1 auto;display: flex;flex-direction: column;position: relative;">
+        </div>
       </div>
       <!-- 妈的黑化了 私人玩意这么难整 早知道 z-index 弄死它得了 浪费我时间 我就没试过这么离谱的样式表 第三方库真难写CSS 就应该先写后端的 啊啊啊啊啊啊 -->
       <!-- 不黑化了 因为 stickyfill -->
       <div class="mdui-toolbar mdui-theme-color-auto"
-        style="position: sticky;max-width: 100%;margin-bottom: -30px;bottom: 0;z-index: 101;">
+        style="position: sticky;max-width: 100%;margin-bottom: -30px;bottom: 0;z-index: 101;"
+        n-id="inputToolbar">
         <ul class="mdui-menu" id="msg-input-more">
           <li class="mdui-menu-item">
             <a class="mdui-ripple">插入图片</a>
@@ -254,6 +260,42 @@
         onclick="User.setNick(viewBinding.dialogEditNickNick.val(), () => {mdui.snackbar('已保存, 刷新页面生效');viewBinding.dialogEditNickClose.click()})">保存</button>
     </div>
   </div>
+
+  <!-- 懂得都懂 -->
+  <div class="mdui-dialog" n-id="dialogNewFriendRequest">
+    <div class="mdui-dialog-title">
+      新的好友请求
+    </div>
+    <div class="mdui-dialog-content" style="margin-left:15px;margin-right:15px;">
+      <div class="mdui-textfield">
+        <label class="mdui-textfield-label">昵称</label>
+        <input n-id="dialogEditNickNick" class="mdui-textfield-input" maxlength="30" type="text" />
+      </div>
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+    </div>
+  </div>
+
+  <!-- 懂得都懂 -->
+  <div class="mdui-dialog" n-id="dialogNewContact">
+    <div class="mdui-dialog-title">
+      添加好友/群
+    </div>
+    <div class="mdui-dialog-content" style="margin-left:15px;margin-right:15px;">
+      <div class="mdui-textfield">
+        <label class="mdui-textfield-label">好友/群的ID (不是名称)</label>
+        <input n-id="dialogNewContactID" class="mdui-textfield-input" maxlength="30" type="text" />
+      </div>
+      <select class="mdui-select" mdui-select="{position: 'top'}" n-id="dialogNewContactType">
+        <option value="single">好友</option>
+        <option value="group">群聊</option>
+      </select>
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close onclick="ContactsList.add(viewBinding.dialogNewContactID.val(), viewBinding.dialogNewContactType.val())">确认并关闭</button>
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+    </div>
   </div>
 
   <div class="mdui-hidden">

@@ -125,14 +125,18 @@ $.ajax({
 
 // Toolbar 快捷按钮绑定
 viewBinding.contactsRefresh.hide()
+viewBinding.contactsAdd.hide()
 viewBinding.tabChatList.on("show.mdui.tab", () => {
     viewBinding.contactsRefresh.hide()
+    viewBinding.contactsAdd.hide()
 })
 viewBinding.tabContacts.on("show.mdui.tab", () => {
     viewBinding.contactsRefresh.show()
+    viewBinding.contactsAdd.show()
 })
 viewBinding.tabChatSeesion.on("show.mdui.tab", () => {
     viewBinding.contactsRefresh.hide()
+    viewBinding.contactsAdd.hide()
 })
 
 viewBinding.tabChatSeesion.hide()
@@ -319,6 +323,14 @@ class ContactsList {
 
         })
     }
+    static add(name, type) {
+        if (type == "single") {
+
+        }
+    }
+    static openAddDialog() {
+        new mdui.Dialog(viewBinding.dialogNewContact.get(0)).open()
+    }
 }
 
 // 第一次写前端的消息加载, 代码很乱, 还请原谅~
@@ -494,7 +506,7 @@ class ChatMsgAdapter {
         // 吐了啊 原来这样就行了 我何必在子element去整啊
         window.scrollBy({
             top: 1145141919810,
-            behavior: 'smooth'
+            behavior: 'smooth' 
         });
     }
     // 从本地加载
@@ -509,6 +521,12 @@ class ChatMsgAdapter {
     static saveToLocal() {
         localStorage["chat_msg_" + this.target] = JSON.stringify(this.msgList)
     }*/
+    // 自动调整使输入框置底 CSS真tm靠不住啊
+    static initInputResizer() {
+        let resize = () => viewBinding.pageChatSeesion.height(window.innerHeight - viewBinding.inputToolbar.height() - $("header.mdui-appbar").height() - viewBinding.chatTab.height() - 90)
+        window.addEventListener("resize", resize)
+        resize()
+    }
     // 为消息设置长按/右键事件
     static initMsgElementEvents() {
         let listeners = {}
@@ -748,3 +766,5 @@ else {
 Stickyfill.add($("*").filter((a, b) => $(b).css('position') === 'sticky'))
 
 ChatMsgAdapter.initMsgElementEvents()
+
+ChatMsgAdapter.initInputResizer()
