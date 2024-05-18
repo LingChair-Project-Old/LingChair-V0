@@ -55,13 +55,34 @@
   <div id="lingchair-app" style="height: 100%;">
     <!-- 侧滑栏 -->
     <div class="mdui-drawer" id="main-drawer">
-      <ul class="mdui-list">
+      <ul class="mdui-list" mdui-collapse="{accordion: true}">
         <li class="mdui-list-item mdui-ripple">
           <div class="mdui-list-item-avatar">
             <img src="default_head.png" n-id="userHead" onerror="this.src='default_head.png'" />
           </div>
           <div class="mdui-list-item-content"><a n-id="helloText">早安</a>, <a n-id="userNick">Unknown</a></div>
         </li>
+        <li class="mdui-list-item mdui-ripple" onclick="new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()">
+          <i class="mdui-list-item-icon mdui-icon material-icons">settings</i>
+          <div class="mdui-list-item-content">设置</div>
+        </li>
+        <li class="mdui-list-item mdui-ripple" n-id="drawerSignOut">
+          <i class="mdui-list-item-icon mdui-icon material-icons">exit_to_app</i>
+          <div class="mdui-list-item-content">登出</div>
+        </li>
+        <div class="mdui-subheader">聊天</div>
+        <li class="mdui-collapse-item">
+          <div class="mdui-collapse-item-header mdui-list-item mdui-ripple"><i class="mdui-list-item-icon mdui-icon material-icons">contacts</i>
+            <div class="mdui-list-item-content">联系人</div><i
+              class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+          </div>
+          <div class="mdui-collapse-item-body mdui-list" n-id="contactsList">
+          </div>
+        </li>
+      </ul>
+
+      <ul class="mdui-list mdui-hidden">
+        
         <li class="mdui-subheader">个人</li>
         <li class="mdui-list-item mdui-ripple" onclick="new mdui.Dialog(viewBinding.dialogMyProfile.get(0)).open()">
           <i class="mdui-list-item-icon mdui-icon material-icons">account_circle</i>
@@ -80,10 +101,6 @@
           <i class="mdui-list-item-icon mdui-icon material-icons">cloud_circle</i>
           <div class="mdui-list-item-content">更换服务器</div>
         </li>
-        <li class="mdui-list-item mdui-ripple" n-id="drawerSignOut">
-          <i class="mdui-list-item-icon mdui-icon material-icons">exit_to_app</i>
-          <div class="mdui-list-item-content">退出登录</div>
-        </li>
       </ul>
     </div>
 
@@ -96,7 +113,7 @@
         </a>
         <a class="mdui-typo-title" n-id="appTitle"></a>
         <div class="mdui-toolbar-spacer"></div>
-        <a onclick="ContactsList.reloadList()" n-id="contactsRefresh" class="mdui-btn mdui-btn-icon mdui-ripple">
+        <a onclick="refreshAll()" n-id="contactsRefresh" class="mdui-btn mdui-btn-icon mdui-ripple">
           <i class="mdui-icon material-icons">refresh</i>
         </a>
         <a onclick="ContactsList.openAddDialog()" n-id="contactsAdd" class="mdui-btn mdui-btn-icon mdui-ripple">
@@ -120,29 +137,16 @@
     <div class="mdui-tab mdui-accent-theme mdui-theme-color-auto" style="position: fixed; z-index: 114;width: 100%;"
       mdui-tab n-id="chatTab">
       <!-- 侧滑栏的 z-index 是2000, 在移动端会直接覆盖 -->
-      <a href="#page-chat-list" n-id="tabChatList" class="mdui-ripple">常用</a>
-      <a href="#page-contacts" n-id="tabContacts" class="mdui-ripple">通讯录</a>
       <a href="#page-chat-seesion" n-id="tabChatSeesion" class="mdui-ripple" style="text-transform: none;"></a>
     </div>
-    <div id="page-chat-list" class="mdui-p-a-2 container">
-      <div class="mdui-valign content" style="margin-top: 40px;">
-        <span class="mdui-center">欢迎回来！ （＾▽＾。）</span>
-      </div>
-    </div>
-    <div id="page-contacts" class="mdui-p-a-2">
-      <ul class="mdui-list" style="margin-top: 30px;">
-        <li class="mdui-subheader">好友</li>
-        <div n-id="contactsList">
-        </div>
-      </ul>
-    </div>
     <!-- 滚动到底部咋这么难写... -->
-    <div id="page-chat-seesion" class="mdui-p-a-2" style="display: flex;flex-direction: column;">
+    <div class="mdui-p-a-2" style="display: flex;flex-direction: column;">
       <!-- 写时间居中写到吐了 这样式表不能要了 -->
       <div
-        style="margin-top: 30px;overflow: auto;width: 100%;max-width: 100%;height: 100%;max-height: 100%;min-height: 0;margin-bottom: 40px;flex: 1 1 auto;display: flex;flex-direction: column;">
+        style="margin-top: 30px;overflow: auto;width: 100%;max-width: 100%;height: 100%;max-height: 100%;min-height: 0;flex: 1 1 auto;display: flex;flex-direction: column;"
+        n-id="chatPager">
         <div class="mdui-center" style="margin: 15px;"><a href="javascript:;" onclick="ChatMsgAdapter.loadMore()"
-            class="mdui-text-color-theme">点我</a>继续加载前面的聊天记录, 或者<a href="javascript:;"
+            class="mdui-text-color-theme">加载更多</a> | <a href="javascript:;"
             onclick="ChatMsgAdapter.scrollToBottom()" class="mdui-text-color-theme">回到底部</a></div>
         <div n-id="pageChatSeesion" style="flex: 1 1 auto;display: flex;flex-direction: column;position: relative;">
         </div>
@@ -150,8 +154,7 @@
       <!-- 妈的黑化了 私人玩意这么难整 早知道 z-index 弄死它得了 浪费我时间 我就没试过这么离谱的样式表 第三方库真难写CSS 就应该先写后端的 啊啊啊啊啊啊 -->
       <!-- 不黑化了 因为 stickyfill -->
       <div class="mdui-toolbar mdui-theme-color-auto"
-        style="position: sticky;max-width: 100%;margin-bottom: -30px;bottom: 0;z-index: 101;"
-        n-id="inputToolbar">
+        style="position: sticky;max-width: 100%;margin-bottom: -30px;bottom: 0;z-index: 101;" n-id="inputToolbar">
         <ul class="mdui-menu" id="msg-input-more">
           <li class="mdui-menu-item">
             <a class="mdui-ripple">插入图片</a>
@@ -219,28 +222,20 @@
     </div>
   </div>
 
-  <!-- 资料编辑对话框 -->
+  <!--
   <div class="mdui-dialog" n-id="dialogMyProfile">
     <div class="mdui-dialog-title">
       资料
     </div>
     <div class="mdui-dialog-content" style="margin-left:15px;margin-right:15px;">
       <ul class="mdui-list">
-        <li class="mdui-list-item mdui-ripple" mdui-dialog-close
-          onclick="(async () => {viewBinding.dialogEditNickNick.val(await NickCache.getNick(localStorage.userName));new mdui.Dialog(viewBinding.dialogEditNick.get(0)).open()})()">
-          <i class="mdui-list-item-icon mdui-icon material-icons">edit</i>
-          <div class="mdui-list-item-content">修改昵称</div>
-        </li>
-        <li class="mdui-list-item mdui-ripple" onclick="User.uploadHeadImage()">
-          <i class="mdui-list-item-icon mdui-icon material-icons">account_circle</i>
-          <div class="mdui-list-item-content">上传头像</div>
-        </li>
+        
       </ul>
     </div>
     <div class="mdui-dialog-actions">
       <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
-  </div>
+  </div> -->
 
   <!-- 编辑昵称对话框 -->
   <div class="mdui-dialog" n-id="dialogEditNick">
@@ -255,7 +250,7 @@
     </div>
     <div class="mdui-dialog-actions">
       <button class="mdui-btn mdui-ripple" n-id="dialogEditNickClose" mdui-dialog-close
-        onclick="new mdui.Dialog(viewBinding.dialogMyProfile.get(0)).open()">关闭</button>
+        onclick="new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()">关闭</button>
       <button class="mdui-btn mdui-ripple"
         onclick="User.setNick(viewBinding.dialogEditNickNick.val(), () => {mdui.snackbar('已保存, 刷新页面生效');viewBinding.dialogEditNickClose.click()})">保存</button>
     </div>
@@ -293,8 +288,34 @@
       </select>
     </div>
     <div class="mdui-dialog-actions">
-      <button class="mdui-btn mdui-ripple" mdui-dialog-close onclick="ContactsList.add(viewBinding.dialogNewContactID.val(), viewBinding.dialogNewContactType.val())">确认并关闭</button>
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close
+        onclick="ContactsList.add(viewBinding.dialogNewContactID.val(), viewBinding.dialogNewContactType.val())">确认并关闭</button>
       <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+    </div>
+  </div>
+
+  <!-- 懂得都懂 -->
+  <div class="mdui-dialog" n-id="dialogSettings">
+    <div class="mdui-dialog-title">
+      设置
+    </div>
+    <div class="mdui-dialog-content" style="margin-left:15px;margin-right:15px;">
+      <ul class="mdui-list">
+        <div class="mdui-subheader">我的资料</div>
+        <li class="mdui-list-item mdui-ripple" mdui-dialog-close
+          onclick="(async () => {viewBinding.dialogEditNickNick.val(await NickCache.getNick(localStorage.userName));new mdui.Dialog(viewBinding.dialogEditNick.get(0)).open()})()">
+          <i class="mdui-list-item-icon mdui-icon material-icons">edit</i>
+          <div class="mdui-list-item-content">修改昵称</div>
+        </li>
+        <li class="mdui-list-item mdui-ripple" onclick="User.uploadHeadImage()">
+          <i class="mdui-list-item-icon mdui-icon material-icons">account_circle</i>
+          <div class="mdui-list-item-content">上传头像</div>
+        </li>
+        <div class="mdui-subheader">客户端</div>
+      </ul>
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
   </div>
 

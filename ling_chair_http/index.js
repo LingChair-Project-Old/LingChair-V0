@@ -123,7 +123,7 @@ $.ajax({
     },
 })
 
-// Toolbar 快捷按钮绑定
+/* // Toolbar 快捷按钮绑定
 viewBinding.contactsRefresh.hide()
 viewBinding.contactsAdd.hide()
 viewBinding.tabChatList.on("show.mdui.tab", () => {
@@ -137,12 +137,12 @@ viewBinding.tabContacts.on("show.mdui.tab", () => {
 viewBinding.tabChatSeesion.on("show.mdui.tab", () => {
     viewBinding.contactsRefresh.hide()
     viewBinding.contactsAdd.hide()
-})
+}) */
 
-viewBinding.tabChatSeesion.hide()
+/* viewBinding.tabChatSeesion.hide() */
 
 // 关于页面
-viewBinding.menuAbout.click(() => mdui.alert('GitHub: MoonLeeeaf<br/><br/>欢迎各位大佬访问我们的<a class="mdui-text-color-theme-accent" href="https://github.com/LingChair/LingChair">项目主页</a>', '关于 铃之椅', () => { }, { confirmText: "关闭" }))
+viewBinding.menuAbout.click(() => mdui.alert('这是一个开源项目<br/>作者: MoonLeeeaf<br/>欢迎访问我们的<a class="mdui-text-color-theme-accent" href="https://github.com/LingChair/LingChair">项目主页</a>', '关于 铃之椅', () => { }, { confirmText: "关闭" }))
 
 viewBinding.drawerChangeServer.click(() => {
     mdui.prompt('输入服务器地址...(为空则使用当前页面地址)', (value) => {
@@ -335,6 +335,19 @@ class ContactsList {
 
 // 第一次写前端的消息加载, 代码很乱, 还请原谅~
 
+// v0.7.0 大改UI 畏惧了 太庞大了
+
+class ChatPage {
+    static cached = {}
+    constructor(name, type) {
+
+    }
+    static switchTo(name, type) {
+        if (!this.cached[name])
+            this.cached[name] = new ChatPage(name, type)
+    }
+}
+
 class ChatMsgAdapter {
     static type
     static target
@@ -504,10 +517,10 @@ class ChatMsgAdapter {
     } */
     static scrollToBottom() {
         // 吐了啊 原来这样就行了 我何必在子element去整啊
-        window.scrollBy({
+        viewBinding.chatPager.get(0).scrollBy({
             top: 1145141919810,
             behavior: 'smooth' 
-        });
+        })
     }
     // 从本地加载
     /*static loadMsgsFromLocal(target) {
@@ -523,7 +536,7 @@ class ChatMsgAdapter {
     }*/
     // 自动调整使输入框置底 CSS真tm靠不住啊
     static initInputResizer() {
-        let resize = () => viewBinding.pageChatSeesion.height(window.innerHeight - viewBinding.inputToolbar.height() - $("header.mdui-appbar").height() - viewBinding.chatTab.height() - 90)
+        let resize = () => viewBinding.pageChatSeesion.height(window.innerHeight - viewBinding.inputToolbar.height() - $("header.mdui-appbar").height() - viewBinding.chatTab.height() - 50)
         window.addEventListener("resize", resize)
         resize()
     }
@@ -768,3 +781,9 @@ Stickyfill.add($("*").filter((a, b) => $(b).css('position') === 'sticky'))
 ChatMsgAdapter.initMsgElementEvents()
 
 ChatMsgAdapter.initInputResizer()
+
+function refreshAll() {
+    ContactsList.reloadList()
+    delete NickCache.data
+    NickCache.data = {}
+}
