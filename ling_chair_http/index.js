@@ -21,6 +21,11 @@
 
 const UrlArgs = new URL(location.href).searchParams
 
+// https://www.ruanyifeng.com/blog/2021/09/detecting-mobile-browser.html
+function isMobile() { 
+  return ('ontouchstart' in document.documentElement); 
+}
+
 function setOnRightClick(e, cb) {
     if (!(e instanceof jQuery))
         e = $(e)
@@ -355,6 +360,7 @@ class ChatMsgAdapter {
     static minMsgId
     static time
     static bbn
+    static resizeDick
     // 切换聊天对象
     static async switchTo(name, type) {
         viewBinding.tabChatSeesion.show()
@@ -536,7 +542,21 @@ class ChatMsgAdapter {
     }*/
     // 自动调整使输入框置底 CSS真tm靠不住啊
     static initInputResizer() {
-        let resize = () => viewBinding.pageChatSeesion.height(window.innerHeight - viewBinding.inputToolbar.height() - $("header.mdui-appbar").height() - viewBinding.chatTab.height() - 50)
+        // 实验表面移动端切出输入法时会触发1-2次resize事件
+        // 可以利用这个特性来实现自动滚动文本
+        let resize = () => {
+            viewBinding.pageChatSeesion.height(window.innerHeight - viewBinding.inputToolbar.height() - $("header.mdui-appbar").height() - viewBinding.chatTab.height() - 50)
+            let ledi = this.resizeDick - window.innerHeight
+            if (isMobile()) viewBinding.chatPager.get(0).scrollBy({
+                // 5.19晚10：56分调配出来的秘方
+                // < 0 为窗口变大
+                // cnm的，调试十万次就你tm检测不到底是吧，就你语法天天错误是吧
+                // 欺负我现在用不了电脑
+                top: -(ledi) * ( (ledi < 0 && this.isAtBottom()) ? 6 : -1 ), // (ledi < 0 ? 6 : 6),
+                behavior: 'smooth'
+            })
+            this.resizeDick = window.innerHeight
+        }
         window.addEventListener("resize", resize)
         resize()
     }
