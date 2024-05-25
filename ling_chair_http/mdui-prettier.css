@@ -34,7 +34,7 @@ body {
 .mdui-select-open {
     border-radius: 10px;
 }
-@media not screen and (min-width: 768px) {
+@media screen and (min-width: 768px) {
     .mdui-snackbar {
         border-radius: 10px;
     }
