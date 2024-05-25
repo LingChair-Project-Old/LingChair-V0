@@ -1,7 +1,7 @@
 {
   "name": "lingchair",
   "description": "A simple, lightweight and powerful Instant Messaging application.",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "license": "Apache License 2.0",
   "author": {
     "name": "MoonLeeeaf",
@@ -11,7 +11,7 @@
     "start": "node ./server_src/main.js"
   },
   "dependencies": {
-    "mime": "^4.0.1",
+    "express": "^4.19.2",
     "socket.io": "^4.7.5"
   },
   "type": "commonjs"

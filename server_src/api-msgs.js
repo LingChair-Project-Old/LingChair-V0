@@ -12,7 +12,7 @@ const users = require("./api-users")
 let getSameHashedValue = (a, b) => {
     let _a = [hash.md5(a) + hash.sha256(a), hash.md5(b) + hash.sha256(b)].sort()
     let [_1, _2] = _a
-    return hash.sha256hex(hash.sha256hex(_1) + hash.sha256hex(_2))
+    return hash.sha256(hash.sha256(_1) + hash.sha256(_2))
 }
 
 let getSingleChatDir = (a, b) => {
