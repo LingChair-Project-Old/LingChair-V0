@@ -1,0 +1,53 @@
+/*
+ * ©2024 满月叶
+ * GitHub: MoonLeeeaf
+ * 是 UI 美化，好耶！
+ */
+
+/* 美化UI */
+
+body {
+    font-family: -apple-system, system-ui, -webkit-system-font;
+}
+.mdui-dialog {
+    border-radius: 23px;
+}
+.mdui-menu {
+    border-radius: 10px;
+}
+.mdui-menu-item > a {
+    padding-right: 3px;
+}
+.mdui-btn:not(.mdui-btn-icon, .mdui-dialog-actions button, .mdui-dialog-actions a) {
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 40px;
+    border-radius: 10px;
+}
+.mdui-dialog-actions a,
+.mdui-dialog-actions button {
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 40px;
+    border-radius: 40px;
+}
+.mdui-select-open {
+    border-radius: 10px;
+}
+@media not screen and (min-width: 768px) {
+    .mdui-snackbar {
+        border-radius: 10px;
+    }
+}
+
+/* 配色方案 */
+
+.mdui-theme-color-auto {
+    background-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+    .mdui-theme-color-auto {
+        background-color: #303030;
+    }
+}
