@@ -24,8 +24,8 @@ const sleep = (t) => new Promise((res) => setTimeout(res, t))
 const UrlArgs = new URL(location.href).searchParams
 
 // https://www.ruanyifeng.com/blog/2021/09/detecting-mobile-browser.html
-function isMobile() { 
-  return ('ontouchstart' in document.documentElement); 
+function isMobile() {
+    return ('ontouchstart' in document.documentElement);
 }
 
 function setOnRightClick(e, cb) {
@@ -396,7 +396,7 @@ class ChatMsgAdapter {
             // 微机课闲的没事干玩玩 发现私聊会多发一个(一个是本地的, 另一个是发送成功的) 选择一个关掉就好了
             // 这里我选择服务端不发送回调, 不然多设备同步会吵死
             // 错了 应该是客户端少发条才对 不然不能多设备同步
-            if (ChatMsgAdapter.target !== localStorage.userName && ChatMsgAdapter.type === "single") {
+            if ((ChatMsgAdapter.target !== localStorage.userName) && ChatMsgAdapter.type === "single") {
                 let i = ChatMsgAdapter.isAtBottom()
                 await ChatMsgAdapter.addMsg(localStorage.userName, msg, re.data.time, re.data.msgid)
                 if (i) ChatMsgAdapter.scrollToBottom()
@@ -528,7 +528,7 @@ class ChatMsgAdapter {
         // 吐了啊 原来这样就行了 我何必在子element去整啊
         viewBinding.chatPager.get(0).scrollBy({
             top: 1145141919810,
-            behavior: 'smooth' 
+            behavior: 'smooth'
         })
     }
     // 从本地加载
@@ -555,7 +555,7 @@ class ChatMsgAdapter {
                 // < 0 为窗口变大
                 // cnm的，调试十万次就你tm检测不到底是吧，就你语法天天错误是吧
                 // 欺负我现在用不了电脑
-                top: -(ledi) * ( (ledi < 0 && this.isAtBottom()) ? 6 : -1 ), // (ledi < 0 ? 6 : 6),
+                top: -(ledi) * ((ledi < 0 && this.isAtBottom()) ? 6 : -1), // (ledi < 0 ? 6 : 6),
                 behavior: 'smooth'
             })
             this.resizeDick = window.innerHeight
@@ -604,11 +604,13 @@ class ChatMsgAdapter {
                     callback(self)
                     break
                 case 'mousedown':
+                    if (!isMobile()) return
                     listeners[self + ""] = setTimeout(() => {
                         callback(self)
                     }, 300) // 300颗够吗 应该够吧
                     break
                 case 'mouseup':
+                    if (!isMobile()) return
                     clearTimeout(listeners[self + ""])
                     listeners[self + ""] = null
                     break
@@ -729,11 +731,13 @@ class User {
                 if (i) ChatMsgAdapter.scrollToBottom()
             }
 
-            let n = new 通知().setTitle("新消息 - " + await NickCache.getNick(a.target)).setMessage(a.msg.msg).setIcon(User.getUserHeadUrl(a.target)).show(async () => {
-                await ChatMsgAdapter.switchTo(a.target, a.type)
-                location.replace("#msgid_" + a.msg.msgid)
-                n.close()
-            })
+            if (ChatMsgAdapter.target !== localStorage.userName) {
+                let n = new 通知().setTitle("" + await NickCache.getNick(a.target)).setMessage(a.msg.msg).setIcon(User.getUserHeadUrl(a.target)).show(async () => {
+                    await ChatMsgAdapter.switchTo(a.target, a.type)
+                    location.replace("#msgid_" + a.msg.msgid)
+                    n.close()
+                })
+            }
         })
     }
     static async openProfileDialog(name) {
