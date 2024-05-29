@@ -19,10 +19,10 @@ const vals = require("./val")
 const color = require("./color")
 
 //定义 Http 服务器回调
-let httpServerCallback = require("./httpApi")
+let httpServerCallback = require("./http-api")
 
 // 定义 Socket.io 服务器回调
-let wsServerCallback = require("./wsApi")
+let wsServerCallback = require("./ws-api")
 
 let httpServer
 if (vals.LINGCHAIR_SERVER_CONFIG.useHttps)

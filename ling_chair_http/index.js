@@ -19,6 +19,7 @@
  * limitations under the License.
  */
 
+// 2024.5.28 睡着了
 const sleep = (t) => new Promise((res) => setTimeout(res, t))
 
 const UrlArgs = new URL(location.href).searchParams
@@ -26,28 +27,6 @@ const UrlArgs = new URL(location.href).searchParams
 // https://www.ruanyifeng.com/blog/2021/09/detecting-mobile-browser.html
 function isMobile() {
     return ('ontouchstart' in document.documentElement);
-}
-
-function setOnRightClick(e, cb) {
-    if (!(e instanceof jQuery))
-        e = $(e)
-
-    let longPressTimer
-    if (!cb) throw new Error("定义回调!!!!")
-    e.on('contextmenu', function (e) {
-        e.preventDefault() // 阻止默认右键菜单
-        cb()
-    })
-
-    e.on('mousedown', function () {
-        longPressTimer = setTimeout(function () {
-            cb()
-        }, 1000)
-    })
-
-    e.on('mouseup', function () {
-        clearTimeout(longPressTimer)
-    });
 }
 
 if (UrlArgs.get("debug")) {
