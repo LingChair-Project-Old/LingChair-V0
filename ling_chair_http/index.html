@@ -1,26 +1,10 @@
 <!doctype html>
 <html lang="zh-cmn-Hans">
-<!--
- * 铃之椅 - 把选择权还给用户, 让聊天权掌握在用户手中
- * Copyright 2024 满月叶
- * GitHub: https://github.com/MoonLeeeaf/LingChair-Web-Client
- * 本项目使用 Apache 2.0 协议开源
- * 
- * Copyright 2024 MoonLeeeaf
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+<!-- 
+ * ©2024 满月叶
+ * Github: MoonLeeeaf
+ * 铃之椅 网页端
 -->
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" />
@@ -147,13 +131,14 @@
         <div class="mdui-center" style="margin: 15px;"><a href="javascript:;" onclick="ChatMsgAdapter.loadMore()"
             class="mdui-text-color-theme">加载更多</a> | <a href="javascript:;"
             onclick="ChatMsgAdapter.scrollToBottom()" class="mdui-text-color-theme">回到底部</a></div>
-        <div n-id="pageChatSeesion" style="flex: 1 1 auto;display: flex;flex-direction: column;position: relative;">
+        <div n-id="pageChatSeesion" class="chat-seesion">
         </div>
+        <!-- 输入框和聊天消息重叠的原因就是死人 scrollbar, 把自动调整的距离调小, margin调大就行了 -->
       </div>
       <!-- 妈的黑化了 私人玩意这么难整 早知道 z-index 弄死它得了 浪费我时间 我就没试过这么离谱的样式表 第三方库真难写CSS 就应该先写后端的 啊啊啊啊啊啊 -->
       <!-- 不黑化了 因为 stickyfill -->
       <div class="mdui-toolbar mdui-theme-color-auto"
-        style="position: sticky;max-width: 100%;margin-bottom: -30px;bottom: 0;z-index: 101;" n-id="inputToolbar">
+        style="position: sticky;max-width: 100%;margin-top: 1px;bottom: 0;z-index: 101;padding-top: 7px;" n-id="inputToolbar">
         <ul class="mdui-menu" id="msg-input-more">
           <li class="mdui-menu-item">
             <a class="mdui-ripple">插入图片</a>

@@ -1,22 +1,7 @@
-/*
- * 铃之椅 - 把选择权还给用户, 让聊天权掌握在用户手中
- * Copyright 2024 满月叶
- * GitHub: https://github.com/MoonLeeeaf/LingChair-Web-Client
- * 本项目使用 Apache 2.0 协议开源
- * 
- * Copyright 2024 MoonLeeeaf
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/* 
+ * ©2024 满月叶
+ * Github: MoonLeeeaf
+ * 铃之椅 网页端
  */
 
 // 2024.5.28 睡着了
@@ -109,24 +94,6 @@ $.ajax({
     },
 })
 
-/* // Toolbar 快捷按钮绑定
-viewBinding.contactsRefresh.hide()
-viewBinding.contactsAdd.hide()
-viewBinding.tabChatList.on("show.mdui.tab", () => {
-    viewBinding.contactsRefresh.hide()
-    viewBinding.contactsAdd.hide()
-})
-viewBinding.tabContacts.on("show.mdui.tab", () => {
-    viewBinding.contactsRefresh.show()
-    viewBinding.contactsAdd.show()
-})
-viewBinding.tabChatSeesion.on("show.mdui.tab", () => {
-    viewBinding.contactsRefresh.hide()
-    viewBinding.contactsAdd.hide()
-}) */
-
-/* viewBinding.tabChatSeesion.hide() */
-
 // 关于页面
 viewBinding.menuAbout.click(() => mdui.alert('这是一个开源项目<br/>作者: MoonLeeeaf<br/>欢迎访问我们的<a class="mdui-text-color-theme-accent" href="https://github.com/LingChair/LingChair">项目主页</a>', '关于 铃之椅', () => { }, { confirmText: "关闭" }))
 
@@ -177,6 +144,10 @@ viewBinding.switchNotifications.click((a) => {
 if (localStorage.useNotifications == "true")
     viewBinding.switchNotificationsIcon.text("notifications")
 
+viewBinding.inputMsg.blur(() => {
+    window.initInputResizerResize()
+})
+
 // https://www.runoob.com/w3cnote/javascript-copy-clipboard.html
 function copyText(t) {
     let btn = viewBinding.textCopierBtn
@@ -215,8 +186,6 @@ Date.prototype.format = function (tms, format) {
     }
     return format;
 }
-
-// new mdui.Drawer('#main-drawer').close()
 
 class NickCache {
     static data = {}
@@ -278,8 +247,6 @@ class 通知 {
         if (localStorage.useNotifications !== "true") return
         let n = new Notification(this.title, this.args)
         n.onclick = onclick == null ? () => n.close() : (n) => onclick(n)
-        // n.onclose = onclose
-        // n.close()
         return n
     }
 }
@@ -298,13 +265,9 @@ class ContactsList {
             for (let index in ls) {
                 let name = ls[index]
                 let dick = await NickCache.getNick(name)
-                /*client.emit("user.getNick", { name: localStorage.userName }, (re) => {
-                    let nick = re.data == null ? re.data.nick : null
-                    let name = ls[index]*/
                 $($.parseHTML(`<li class="mdui-list-item mdui-ripple" mdui-drawer-close><div class="mdui-list-item-avatar"><img src="` + User.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" /></div><div class="mdui-list-item-content">` + dick + `</div></li>`)).appendTo(viewBinding.contactsList).click(() => {
                     ChatMsgAdapter.switchTo(name, "single")
                 })
-                //})
             }
 
         })
@@ -320,9 +283,7 @@ class ContactsList {
     }
 }
 
-// 第一次写前端的消息加载, 代码很乱, 还请原谅~
-
-// v0.7.0 大改UI 畏惧了 太庞大了
+// 消息核心
 
 class ChatPage {
     static cached = {}
@@ -338,7 +299,6 @@ class ChatPage {
 class ChatMsgAdapter {
     static type
     static target
-    // static msgList
     static minMsgId
     static time
     static bbn
@@ -351,7 +311,6 @@ class ChatMsgAdapter {
 
         this.type = type
         this.target = name
-        // this.msgList = []
         this.minMsgId = null
 
         viewBinding.pageChatSeesion.empty()
@@ -482,27 +441,11 @@ class ChatMsgAdapter {
 
         return e
     }
-    // 添加消息记录  作用在 UI 和 msgList
-    /* static async addMsgLocal(name, m, t, msgid) {
-        this.msgList.push({
-            name: name,
-            msg: m,
-            msgid: msgid,
-        })
-
-        this.addMsg(name, m, t)
-    } */
     // 从服务器加载一些聊天记录, limit默认=13
     static async loadMsgs(limit) {
         let histroy = await this.getHistroy(this.msgList[0] == null ? null : this.msgList[0].msgid - 1, limit == null ? 13 : limit)
         this.msgList = histroy
     }
-    /* static async loadMsgsFromList(lst) {
-        for (let index in lst) {
-            let i = lst[index]
-            await this.addMsg(i.name, i.msg, i.time)
-        }
-    } */
     static scrollToBottom() {
         // 吐了啊 原来这样就行了 我何必在子element去整啊
         viewBinding.chatPager.get(0).scrollBy({
@@ -510,24 +453,13 @@ class ChatMsgAdapter {
             behavior: 'smooth'
         })
     }
-    // 从本地加载
-    /*static loadMsgsFromLocal(target) {
-        let data = localStorage["chat_msg_" + target]
-        if (data == null || data === "[]")
-            return []
-
-        return JSON.parse(data)
-    }
-    // 把当前聊天记录储存到本地
-    static saveToLocal() {
-        localStorage["chat_msg_" + this.target] = JSON.stringify(this.msgList)
-    }*/
     // 自动调整使输入框置底 CSS真tm靠不住啊
     static initInputResizer() {
         // 实验表面移动端切出输入法时会触发1-2次resize事件
         // 可以利用这个特性来实现自动滚动文本
         let resize = () => {
-            viewBinding.pageChatSeesion.height(window.innerHeight - viewBinding.inputToolbar.height() - $("header.mdui-appbar").height() - viewBinding.chatTab.height() - 50)
+            // CSS 牵一发而动全身 因此这个减少的数值是每天都要更改的
+            viewBinding.pageChatSeesion.height(window.innerHeight - viewBinding.inputToolbar.height() - $("header.mdui-appbar").height() - viewBinding.chatTab.height() - 65)
             let ledi = this.resizeDick - window.innerHeight
             if (isMobile()) viewBinding.chatPager.get(0).scrollBy({
                 // 5.19晚10：56分调配出来的秘方
@@ -539,6 +471,7 @@ class ChatMsgAdapter {
             })
             this.resizeDick = window.innerHeight
         }
+        window.initInputResizerResize = resize
         window.addEventListener("resize", resize)
         resize()
     }

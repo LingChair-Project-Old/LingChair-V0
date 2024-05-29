@@ -6,9 +6,12 @@
 
 /* 美化UI */
 
+/* 恢复系统字体 */
 body {
     font-family: -apple-system, system-ui, -webkit-system-font;
 }
+
+/* 圆角化 */
 .mdui-dialog {
     border-radius: 23px;
 }
@@ -42,10 +45,14 @@ body {
 
 /* 配色方案 */
 
-.mdui-theme-color-auto {
-    background-color: #fff;
+.mdui-list-item-avatar {
+    background-color: rgba(0, 0, 0, 0) !important;
 }
 
+/* 背景底色 */
+.mdui-theme-color-auto {
+    background-color: rgba(0, 0, 0, 0);
+}
 @media (prefers-color-scheme: dark) {
     .mdui-theme-color-auto {
         background-color: #303030;
