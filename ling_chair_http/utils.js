@@ -62,6 +62,10 @@ function escapeHTML(str) {
 }
 
 class NData {
+    /**
+     * 获取 MD5sum
+     * @param {String} 数据
+     */
     static mount(node) {
         // 便捷获得指定组件
         let es = node.querySelectorAll("[n-id]")
@@ -80,6 +84,11 @@ class NData {
 }
 
 // https://www.runoob.com/w3cnote/javascript-copy-clipboard.html
+
+/**
+ * 复制文字
+ * @param {String} 欲复制的文本
+ */
 function copyText(t) {
     let btn = $("[n-id=textCopierBtn]")
     btn.attr("data-clipboard-text", t)
@@ -90,6 +99,13 @@ function copyText(t) {
 }
 
 // https://zhuanlan.zhihu.com/p/162910462
+
+/**
+ * 格式化日期
+ * @param {int} 时间戳
+ * @param {String} 欲格式化的文本
+ * @returns {String} 格式后的文本
+ */
 Date.prototype.format = function (tms, format) {
     let tmd = new Date(tms)
     /*
@@ -164,11 +180,21 @@ class 通知 {
 }
 
 class Hash {
+    /**
+     * 获取 MD5sum
+     * @param {String} 数据
+     * @returns {String} Hex化的哈希值
+     */
     static md5(data) {
-        return CryptoJS.MD5(data).toString(CryptoJS.enc.Base64)
+        return CryptoJS.MD5(data).toString(CryptoJS.enc.Hex)
     }
+    /**
+     * 获取 SHA256sum
+     * @param {String} 数据
+     * @returns {String} Hex化的哈希值
+     */
     static sha256(data) {
-        return CryptoJS.SHA256(data).toString(CryptoJS.enc.Base64)
+        return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex)
     }
 }
 
