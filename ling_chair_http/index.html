@@ -184,9 +184,9 @@
       </div>
       <div class="mdui-dialog-actions">
         <button class="mdui-btn mdui-ripple"
-          onclick="User.signUp(viewBinding.dialogSignInName.val(), viewBinding.dialogSignInPasswd.val(), () => mdui.snackbar('注册成功, 请直接点击登录即可~'))">注册</button>
+          onclick="CurrentUser.signUp(viewBinding.dialogSignInName.val(), viewBinding.dialogSignInPasswd.val(), () => mdui.snackbar('注册成功, 请直接点击登录即可~'))">注册</button>
         <button class="mdui-btn mdui-ripple" n-id="dialogSignInEnter"
-          onclick="User.signInWithDialog(viewBinding.dialogSignInName.val(), viewBinding.dialogSignInPasswd.val())">登录</button>
+          onclick="CurrentUser.signInWithDialog(viewBinding.dialogSignInName.val(), viewBinding.dialogSignInPasswd.val())">登录</button>
       </div>
     </div>
   </div>
@@ -221,7 +221,7 @@
       <button class="mdui-btn mdui-ripple" n-id="dialogEditNickClose" mdui-dialog-close
         onclick="new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()">关闭</button>
       <button class="mdui-btn mdui-ripple"
-        onclick="User.setNick(viewBinding.dialogEditNickNick.val(), () => {mdui.snackbar('已保存, 刷新页面生效');viewBinding.dialogEditNickClose.click()})">保存</button>
+        onclick="CurrentUser.setNick(viewBinding.dialogEditNickNick.val(), () => {mdui.snackbar('已保存, 刷新页面生效');viewBinding.dialogEditNickClose.click()})">保存</button>
     </div>
   </div>
 
@@ -276,7 +276,7 @@
           <i class="mdui-list-item-icon mdui-icon material-icons">edit</i>
           <div class="mdui-list-item-content">修改昵称</div>
         </li>
-        <li class="mdui-list-item mdui-ripple" onclick="User.uploadHeadImage()">
+        <li class="mdui-list-item mdui-ripple" onclick="CurrentUser.uploadHeadImage()">
           <i class="mdui-list-item-icon mdui-icon material-icons">account_circle</i>
           <div class="mdui-list-item-content">上传头像</div>
         </li>
@@ -289,7 +289,7 @@
   </div>
 
   <div class="mdui-hidden">
-    <input type="file" n-id="uploadHeadImage" name="选择头像" onchange="User.uploadHeadImageCallback(this)"
+    <input type="file" n-id="uploadHeadImage" name="选择头像" onchange="CurrentUser.uploadHeadImageCallback(this)"
       accept="image/png, image/jpeg" />
   </div>
 
@@ -302,7 +302,7 @@
   <script src="manager.js"></script>
   <script src="ui.js"></script>
   <script src="handler.js"></script>
-  <script src="index.js"></script>
+  <script src="finally.js"></script>
 </body>
 
 </html>

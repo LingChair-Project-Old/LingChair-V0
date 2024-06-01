@@ -35,11 +35,11 @@ else {
     else hello = "晚安"
     viewBinding.helloText.text(hello)
 
-    viewBinding.userHead.attr("src", User.getUserHeadUrl(localStorage.userName))
+    viewBinding.userHead.attr("src", CurrentUser.getUserHeadUrl(localStorage.userName))
 
     ContactsList.reloadList()
 
-    User.registerCallback()
+    CurrentUser.registerCallback()
 }
 
 // 感谢AI的力量

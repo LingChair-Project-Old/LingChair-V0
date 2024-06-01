@@ -3,7 +3,12 @@
  * Github: MoonLeeeaf
  * 业务逻辑
  */
-class User {
+
+// ================================
+//             当前用户
+// ================================
+
+class CurrentUser {
     static myAccessToken
     // 登录账号  通过回调函数返回刷新令牌
     static signIn(name, passwd, cb) {
@@ -69,7 +74,7 @@ class User {
         let img = self.files[0]
         client.emit("user.setHeadImage", {
             name: localStorage.userName,
-            accessToken: await User.getAccessToken(),
+            accessToken: await CurrentUser.getAccessToken(),
             headImage: img,
         }, (re) => mdui.snackbar(re.msg))
     }
@@ -80,7 +85,7 @@ class User {
                 if (!re.invalid)
                     return mdui.snackbar("验证用户失败！")
 
-                mdui.alert("账号刷新令牌已过期, 请重新登录哦", "提示", () => User.signOutAndReload(), {
+                mdui.alert("账号刷新令牌已过期, 请重新登录哦", "提示", () => CurrentUser.signOutAndReload(), {
                     confirmText: "确定",
                     closeOnConfirm: false,
                     closeOnEsc: false,
@@ -107,7 +112,7 @@ class User {
             }
 
             if (ChatMsgAdapter.target !== localStorage.userName) {
-                let n = new 通知().setTitle("" + await NickCache.getNick(a.target)).setMessage(a.msg.msg).setIcon(User.getUserHeadUrl(a.target)).show(async () => {
+                let n = new 通知().setTitle("" + await NickCache.getNick(a.target)).setMessage(a.msg.msg).setIcon(CurrentUser.getUserHeadUrl(a.target)).show(async () => {
                     await ChatMsgAdapter.switchTo(a.target, a.type)
                     location.replace("#msgid_" + a.msg.msgid)
                     n.close()
@@ -116,11 +121,15 @@ class User {
         })
     }
     static async openProfileDialog(name) {
-        viewBinding.dialogProfileHead.attr("src", User.getUserHeadUrl(name))
+        viewBinding.dialogProfileHead.attr("src", CurrentUser.getUserHeadUrl(name))
         viewBinding.dialogProfileNick.text(await NickCache.getNick(name))
         new mdui.Dialog(viewBinding.dialogProfile).open()
     }
 }
+
+// ================================
+//             昵称缓存
+// ================================
 
 class NickCache {
     static data = {}
@@ -145,7 +154,7 @@ class ContactsList {
     static async reloadList() {
         client.emit("user.getFriends", {
             name: localStorage.userName,
-            accessToken: await User.getAccessToken(),
+            accessToken: await CurrentUser.getAccessToken(),
         }, async (re) => {
             if (re.code !== 0)
                 return mdui.snackbar(re.msg)
@@ -155,7 +164,7 @@ class ContactsList {
             for (let index in ls) {
                 let name = ls[index]
                 let dick = await NickCache.getNick(name)
-                $($.parseHTML(`<li class="mdui-list-item mdui-ripple" mdui-drawer-close><div class="mdui-list-item-avatar"><img src="` + User.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" /></div><div class="mdui-list-item-content">` + dick + `</div></li>`)).appendTo(viewBinding.contactsList).click(() => {
+                $($.parseHTML(`<li class="mdui-list-item mdui-ripple" mdui-drawer-close><div class="mdui-list-item-avatar"><img src="` + CurrentUser.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" /></div><div class="mdui-list-item-content">` + dick + `</div></li>`)).appendTo(viewBinding.contactsList).click(() => {
                     ChatMsgAdapter.switchTo(name, "single")
                 })
             }
@@ -214,7 +223,7 @@ class ChatMsgAdapter {
             name: localStorage.userName,
             target: this.target,
             msg: msg,
-            accessToken: await User.getAccessToken(),
+            accessToken: await CurrentUser.getAccessToken(),
         }, async (re) => {
             if (re.code !== 0)
                 return mdui.snackbar(re.msg)
@@ -237,7 +246,7 @@ class ChatMsgAdapter {
                 name: localStorage.userName,
                 target: this.target,
                 limit: limit,
-                accessToken: await User.getAccessToken(),
+                accessToken: await CurrentUser.getAccessToken(),
                 startId: start,
             }, (re) => {
                 if (re.code !== 0)
@@ -298,11 +307,11 @@ class ChatMsgAdapter {
                 <span id="msg-content">` + msg + `</span>
                 </div>
                 </div>
-                <img class="avatar" src="` + User.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" />
+                <img class="avatar" src="` + CurrentUser.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" />
                 </div>`
         else
             temp = `<div class="chat-message-left">
-                <img class="avatar" src="` + User.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" />
+                <img class="avatar" src="` + CurrentUser.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" />
                 <div class="message-content-with-nickname-left">
                 <span class="nickname">` + nick + `</span>
                 <div class="message-content mdui-card" id="msgid_` + msgid + `">
@@ -427,7 +436,7 @@ function refreshAll() {
     NickCache.data = {}
 }
 
-window.User = User
+window.User = CurrentUser
 window.ContactsList = ContactsList
 window.NickCache = NickCache
 window.ChatPage = ChatPage
