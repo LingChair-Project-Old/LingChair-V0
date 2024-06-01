@@ -10,7 +10,12 @@
 
 class CurrentUser {
     static myAccessToken
-    // 登录账号  通过回调函数返回刷新令牌
+    /**
+     * 登录账号
+     * @param {String} name 
+     * @param {String} passwd 
+     * @param {Function} callback
+     */
     static signIn(name, passwd, cb) {
         client.emit("user.signIn", {
             name: name,
@@ -22,6 +27,12 @@ class CurrentUser {
             cb(re)
         })
     }
+    /**
+     * 注册账号
+     * @param {String} name 
+     * @param {String} passwd 
+     * @param {Function} callback
+     */
     static signUp(name, passwd, cb) {
         client.emit("user.signUp", {
             name: name,
@@ -33,7 +44,11 @@ class CurrentUser {
             cb(re)
         })
     }
-    // 为登录对话框编写的
+    /**
+     * 登录对话框中的登录逻辑
+     * @param {String} name 
+     * @param {String} passwd
+     */
     static signInWithDialog(name, passwd) {
         this.signIn(name, passwd, (re) => {
             localStorage.refreshToken = re.data.refreshToken
@@ -42,6 +57,11 @@ class CurrentUser {
             location.reload()
         })
     }
+    /**
+     * 设置昵称
+     * @param {String} nick
+     * @param {Function} callback
+     */
     static async setNick(nick, cb) {
         client.emit("user.setNick", {
             name: localStorage.userName,
@@ -53,10 +73,19 @@ class CurrentUser {
             if (cb) cb()
         })
     }
-    // 获取头像链接
+    /**
+     * 获取用户头像的链接
+     * @param {String} name
+     * @returns {String} headImageUrl
+     */
     static getUserHeadUrl(name) {
         return client.io.uri + "/users_head/" + name + ".png"
     }
+    /**
+     * 获取访问密钥
+     * @param {String} name 
+     * @returns {Promise<String>} accessToken
+     */
     static async getAccessToken(er) {
         if (this.myAccessToken == null)
             this.myAccessToken = await new Promise((res) => {
@@ -67,9 +96,16 @@ class CurrentUser {
             })
         return this.myAccessToken
     }
+    /**
+     * 请求上传头像
+     */
     static uploadHeadImage() {
         viewBinding.uploadHeadImage.click()
     }
+    /**
+     * 上传头像回调事件
+     * @param {Element} element 
+     */
     static async uploadHeadImageCallback(self) {
         let img = self.files[0]
         client.emit("user.setHeadImage", {
@@ -78,6 +114,9 @@ class CurrentUser {
             headImage: img,
         }, (re) => mdui.snackbar(re.msg))
     }
+    /**
+     * 验证用户
+     */
     static auth() {
         client.emit("user.auth", { name: localStorage.userName, refreshToken: localStorage.refreshToken }, (re) => {
             if (re.code !== 0) {
@@ -94,12 +133,18 @@ class CurrentUser {
             }
         })
     }
+    /**
+     * 登出并重载页面
+     */
     static signOutAndReload() {
         localStorage.refreshToken = ""
         localStorage.isSignIn = false
 
         setTimeout(() => location.reload(), 300)
     }
+    /**
+     * 注册客户端回调事件
+     */
     static registerCallback() {
         client.on("msg.receive", async (a) => {
             if (checkEmpty([a.target, a.msg, a.type]))
@@ -120,6 +165,10 @@ class CurrentUser {
             }
         })
     }
+    /**
+     * 打开资料卡
+     * @param {String} name
+     */
     static async openProfileDialog(name) {
         viewBinding.dialogProfileHead.attr("src", CurrentUser.getUserHeadUrl(name))
         viewBinding.dialogProfileNick.text(await NickCache.getNick(name))
@@ -133,6 +182,11 @@ class CurrentUser {
 
 class NickCache {
     static data = {}
+    /**
+     * 获取昵称
+     * @param {String} name
+     * @returns {String} nick
+     */
     static async getNick(name) {
         return await new Promise((res, rej) => {
             // 这个this别摆着不放啊 不然两下就会去世
@@ -151,6 +205,9 @@ class NickCache {
 }
 
 class ContactsList {
+    /**
+     * 重载联系人列表
+     */
     static async reloadList() {
         client.emit("user.getFriends", {
             name: localStorage.userName,
@@ -171,12 +228,18 @@ class ContactsList {
 
         })
     }
-    // 添加联系人，好友或者群聊
+    /**
+     * 添加联系人/群峦
+     * @param {String} nameOrId
+     */
     static add(name, type) {
         if (type == "single") {
 
         }
     }
+    /**
+     * 打开添加联系人的对话框
+     */
     static openAddDialog() {
         new mdui.Dialog(viewBinding.dialogNewContact.get(0)).open()
     }
@@ -189,6 +252,11 @@ class ChatPage {
     constructor(name, type) {
 
     }
+    /**
+     * 切换到某一个聊天对象
+     * @param {String} name
+     * @param {String} type
+     */
     static switchTo(name, type) {
         if (!this.cached[name])
             this.cached[name] = new ChatPage(name, type)
@@ -202,7 +270,11 @@ class ChatMsgAdapter {
     static time
     static bbn
     static resizeDick
-    // 切换聊天对象
+    /**
+     * 切换到某一个聊天对象
+     * @param {String} name
+     * @param {String} type
+     */
     static async switchTo(name, type) {
         viewBinding.tabChatSeesion.show()
         viewBinding.tabChatSeesion.text(await NickCache.getNick(name))
@@ -217,7 +289,10 @@ class ChatMsgAdapter {
         await this.loadMore()
         this.scrollToBottom()
     }
-    // 发送消息
+    /**
+     * 发送消息
+     * @param {String} msg
+     */
     static async send(msg) {
         client.emit("user.sendSingleMsg", {
             name: localStorage.userName,
@@ -240,6 +315,11 @@ class ChatMsgAdapter {
             }
         })
     }
+    /**
+     * 获取聊天消息记录
+     * @param {int} 起始点
+     * @param {int} 获取数量
+     */
     static async getHistroy(start, limit) {
         return new Promise(async (res, rej) => {
             client.emit("user.getSingleChatHistroy", {
@@ -255,6 +335,10 @@ class ChatMsgAdapter {
             })
         })
     }
+    /**
+     * 加载更多聊天记录
+     * @param {int}} 加载数量
+     */
     static async loadMore(limit) {
         let histroy = await this.getHistroy(this.minMsgId, limit == null ? 13 : limit)
 
@@ -276,6 +360,12 @@ class ChatMsgAdapter {
             behavior: 'smooth'
         })
     }
+    /**
+     * 添加系统消息
+     * @param {String} 消息
+     * @param {String} 是否加到顶部
+     * @returns {jQuery} 消息元素
+     */
     static addSystemMsg(m, re) {
         let e
         if (re)
@@ -286,12 +376,25 @@ class ChatMsgAdapter {
             e = $($.parseHTML(m)).appendTo(viewBinding.pageChatSeesion)
         return e
     }
+    /**
+     * 是否在底部
+     * @returns {Boolean} 是否在底部
+     */
     static isAtBottom() {
         let elementRect = viewBinding.pageChatSeesion.get(0).getBoundingClientRect()
         return (elementRect.bottom <= window.innerHeight)
     }
     // 添加消息 返回消息的JQ对象
     // name: 用户id  m: 消息  t: 时间戳  re: 默认加到尾部  msgid: 消息id
+    /**
+     * 添加聊天记录
+     * @param {String} name
+     * @param {String} msg
+     * @param {String} type
+     * @param {String} 是否加到头部
+     * @param {String or int} 消息id
+     * @returns {jQuery} 消息元素
+     */
     static async addMsg(name, m, t, re, msgid) {
 
         let nick = await NickCache.getNick(name) // re.data == null ? name : re.data.nick
@@ -340,11 +443,17 @@ class ChatMsgAdapter {
 
         return e
     }
-    // 从服务器加载一些聊天记录, limit默认=13
+    /**
+     * 从服务器加载一些聊天记录
+     * @param {int} 数量
+     */
     static async loadMsgs(limit) {
         let histroy = await this.getHistroy(this.msgList[0] == null ? null : this.msgList[0].msgid - 1, limit == null ? 13 : limit)
         this.msgList = histroy
     }
+    /**
+     * 滑到底部
+     */
     static scrollToBottom() {
         // 吐了啊 原来这样就行了 我何必在子element去整啊
         viewBinding.chatPager.get(0).scrollBy({
@@ -352,7 +461,9 @@ class ChatMsgAdapter {
             behavior: 'smooth'
         })
     }
-    // 自动调整使输入框置底 CSS真tm靠不住啊
+    /**
+     * 初始化输入框位置调整器
+     */
     static initInputResizer() {
         // 实验表面移动端切出输入法时会触发1-2次resize事件
         // 可以利用这个特性来实现自动滚动文本
@@ -374,7 +485,9 @@ class ChatMsgAdapter {
         window.addEventListener("resize", resize)
         resize()
     }
-    // 为消息设置长按/右键事件
+    /**
+     * 初始化消息框右击事件
+     */
     static initMsgElementEvents() {
         let listeners = {}
         let menu
@@ -430,6 +543,9 @@ class ChatMsgAdapter {
     }
 }
 
+/**
+ * 刷新联系人列表以及昵称缓存
+ */
 function refreshAll() {
     ContactsList.reloadList()
     delete NickCache.data
