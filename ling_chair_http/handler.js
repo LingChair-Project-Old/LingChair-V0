@@ -390,16 +390,16 @@ class ChatMsgAdapter {
      * 添加聊天记录
      * @param {String} name
      * @param {String} msg
-     * @param {String} type
+     * @param {String} type 
      * @param {String} 是否加到头部
-     * @param {String or int} 消息id
+     * @param {String || int} 消息id
      * @returns {jQuery} 消息元素
      */
     static async addMsg(name, m, t, re, msgid) {
 
         let nick = await NickCache.getNick(name) // re.data == null ? name : re.data.nick
 
-        let msg = escapeHTML(m)
+        let msg = marked.parse(m)
 
         let temp
         if (name === localStorage.userName)

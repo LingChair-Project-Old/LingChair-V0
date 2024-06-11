@@ -52,3 +52,36 @@ Stickyfill.add($("*").filter((a, b) => $(b).css('position') === 'sticky'))
 ChatMsgAdapter.initMsgElementEvents()
 
 ChatMsgAdapter.initInputResizer()
+
+const showLinkDialog = (link) => mdui.alert(decodeURI(link) + "<br/>如果你确认此链接是安全的, 那么请<a class=\"mdui-text-color-theme-accent\" href=\"" + link + "\">点我</a>", '链接', () => { }, { confirmText: "关闭" })
+
+const showImageDialog = (link, id, alt) => mdui.alert(`此图片链接来源未知: ${decodeURI(link)}<br/>如果你希望加载, 请<a class="mdui-text-color-theme-accent" mdui-dialog-close onclick="$('#${id}').html('<img src=\\'${link}\\' alt=\\'${decodeURI(alt)}\\'></img>')">点我</a>`, '外部图片', () => { }, { confirmText: "关闭" })
+
+const renderer = {
+    heading(text, level) {
+        return text
+    },
+    paragraph(text) {
+        return text
+    },
+    blockquote(text) {
+        return text
+    },
+    link(href, title, text) {
+        return `<a class="mdui-text-color-theme-accent" onclick="showLinkDialog('${encodeURI(href)}')">${text}</a>`
+    },
+    image(href, title, text) {
+        let h = Hash.sha256(href)
+        if (new URL(href).hostname === new URL(location.href))
+            return `<img src="${encodeURI(href)}" alt="${text}"></img>`
+        else
+            return `<div id="${h}"><a class="mdui-text-color-theme-accent" onclick="showImageDialog('${encodeURI(href)}', '${h}', '${encodeURI(text)}')">[外部图片] ${text}</a></div>`
+    }
+}
+
+marked.use({
+    gfm: true,
+    renderer: renderer,
+})
+
+
