@@ -406,7 +406,7 @@ class ChatMsgAdapter {
             temp = `<div class="chat-message-right">
                 <div class="message-content-with-nickname-right">
                 <span class="nickname">` + nick + `</span>
-                <div class="message-content mdui-card" id="msgid_` + msgid + `">
+                <div class="message-content mdui-card" tag="msg-card" id="msgid_` + msgid + `">
                 <span id="msg-content">` + msg + `</span>
                 </div>
                 </div>
@@ -417,7 +417,7 @@ class ChatMsgAdapter {
                 <img class="avatar" src="` + CurrentUser.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" />
                 <div class="message-content-with-nickname-left">
                 <span class="nickname">` + nick + `</span>
-                <div class="message-content mdui-card" id="msgid_` + msgid + `">
+                <div class="message-content mdui-card" tag="msg-card" id="msgid_` + msgid + `">
                 <span id="msg-content">` + msg + `</span>
                 </div>
                 </div>
@@ -440,7 +440,7 @@ class ChatMsgAdapter {
         }
 
         this.bbn = new Date(t).getMinutes()
-
+        
         return e
     }
     /**
@@ -493,10 +493,11 @@ class ChatMsgAdapter {
         let menu
         let callback = (e) => {
             if (menu) menu.close()
-            // 从 span 切到 div
-            if (e.get(0).tagName.toLowerCase() != "div") e = $(e.get(0).parentNode)
-            // 从 消息框 切到 更上层
-            e = $(e.get(0).parentNode)
+            // 切到 div.message-content
+            let ele = e.get(0)
+            while ($(ele).attr("tag") != "msg-card")
+                ele = ele.parentNode
+            e = $(ele)
             let menuHtml = $.parseHTML(`<ul class="mdui-menu menu-on-message">
             <li class="mdui-menu-item">
               <a onclick="copyText(\`` + e.find("#msg-content").text() + `\`)" class="mdui-ripple">复制</a>
