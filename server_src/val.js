@@ -48,7 +48,8 @@ if (!io.exists(vals.LINGCHAIR_SERVER_CONFIG_FILE)) io.open(vals.LINGCHAIR_SERVER
         cert: "",
     },
 })).close()
-if (!io.exists(vals.LINGCHAIR_USERS_COUNT_FILE)) io.open(vals.LINGCHAIR_USERS_COUNT_FILE, "w").write("10000").close()
+if (!io.exists(vals.LINGCHAIR_USERS_COUNT_FILE))
+    io.open(vals.LINGCHAIR_USERS_COUNT_FILE, "w").write("10000").close()
 
 // 加载服务端配置文件
 vals.LINGCHAIR_SERVER_CONFIG = JSON.parse(io.open(vals.LINGCHAIR_SERVER_CONFIG_FILE, "r").read("*a"))
