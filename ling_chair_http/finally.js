@@ -53,11 +53,11 @@ ChatMsgAdapter.initMsgElementEvents()
 
 ChatMsgAdapter.initInputResizer()
 
-const showLinkDialog = (link) => mdui.alert(decodeURIComponent(link) + "<br/>如果你确认此链接是安全的, 那么请<a class=\"mdui-text-color-theme-accent\" href=\"" + link + "\">点我</a>", '链接', () => { }, { confirmText: "关闭" })
+const showLinkDialog = (link) => mdui.alert(decodeURI(link) + "<br/>如果你确认此链接是安全的, 那么请<a class=\"mdui-text-color-theme-accent\" href=\"" + link + "\">点我</a>", '链接', () => { }, { confirmText: "关闭" })
 
-const showImageDialog = (link, id, alt) => mdui.alert(`此图片链接来源未知: ${decodeURIComponent(link)}<br/>如果你希望加载, 请<a class="mdui-text-color-theme-accent" mdui-dialog-close onclick="$('#${id}').html('<img src=\\'${link}\\' alt=\\'${decodeURIComponent(alt)}\\'></img>')">点我</a>`, '外部图片', () => { }, { confirmText: "关闭" })
+const showImageDialog = (link, id, alt) => mdui.alert(`此图片链接来源未知: ${decodeURI(link)}<br/>如果你希望加载, 请<a class="mdui-text-color-theme-accent" mdui-dialog-close onclick="$('#${id}').html('<img src=\\'${link}\\' alt=\\'${decodeURI(alt)}\\' class=\\'message-image\\'></img>')">点我</a>`, '外部图片', () => { }, { confirmText: "关闭" })
 
-const showCodeDialog = (code) => mdui.alert(`<pre><code>${decodeURIComponent(code)}</code></pre>`, '代码块', () => { }, { confirmText: "关闭" })
+const showCodeDialog = (code) => mdui.alert(`<pre><code>${decodeURI(code)}</code></pre>`, '代码块', () => { }, { confirmText: "关闭" })
 
 const renderer = {
     heading(text, level) {
@@ -70,23 +70,28 @@ const renderer = {
         return text
     },
     link(href, title, text) {
-        return `<a class="mdui-text-color-theme-accent" onclick="showLinkDialog('${encodeURIComponent(href)}')">[链接] ${text}</a>`
+        return `<a class="mdui-text-color-theme-accent" onclick="showLinkDialog('${encodeURI(href)}')">[链接] ${text}</a>`
     },
     image(href, title, text) {
         let h = Hash.sha256(href)
-        if (new URL(href).hostname === new URL(location.href))
-            return `<img src="${encodeURIComponent(href)}" alt="${text}"></img>`
+        let out = true
+        try {
+            out = new URL(href).hostname === new URL(location.href)
+        } catch(e) {}
+        if (out)
+            return `<img src="${encodeURI(href)}" alt="${text}" class="message-image"></img>`
         else
-            return `<div id="${h}"><a class="mdui-text-color-theme-accent" onclick="showImageDialog('${encodeURIComponent(href)}', '${h}', '${encodeURIComponent(text)}')">[外部图片] ${text}</a></div>`
+            return `<div id="${h}"><a class="mdui-text-color-theme-accent" onclick="showImageDialog('${encodeURI(href)}', '${h}', '${encodeURI(text)}')">[外部图片] ${text}</a></div>`
     },
     code(src) {
-        return `<a class="mdui-text-color-theme-accent" onclick="showCodeDialog(\`${encodeURIComponent(src)}\`)">[代码块]</a>`
+        return `<a class="mdui-text-color-theme-accent" onclick="showCodeDialog(\`${encodeURI(src)}\`)">[代码块]</a>`
     },
 }
 
 marked.use({
     gfm: true,
     renderer: renderer,
+    async: true,
 })
 
 

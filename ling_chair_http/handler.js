@@ -399,7 +399,14 @@ class ChatMsgAdapter {
 
         let nick = await NickCache.getNick(name) // re.data == null ? name : re.data.nick
 
-        let msg = marked.parse(m)
+        let msg
+        
+        try {
+            msg = await marked.parse(m)
+        } catch(e) {
+            console.log("解析消息失败: " + e)
+            msg = escapeHTML(m)
+        }
 
         let temp
         if (name === localStorage.userName)
@@ -440,7 +447,7 @@ class ChatMsgAdapter {
         }
 
         this.bbn = new Date(t).getMinutes()
-        
+
         return e
     }
     /**
