@@ -87,4 +87,5 @@
 .message-image {
     max-width: 40%;
     max-height: 40%;
+    border-radius: 15px;
 }

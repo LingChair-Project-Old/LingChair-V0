@@ -268,7 +268,7 @@ class ChatMsgAdapter {
     static target
     static minMsgId
     static time
-    static bbn
+    static minutesCache
     static resizeDick
     /**
      * 切换到某一个聊天对象
@@ -395,60 +395,62 @@ class ChatMsgAdapter {
      * @param {String || int} 消息id
      * @returns {jQuery} 消息元素
      */
-    static async addMsg(name, m, t, re, msgid) {
+    static async addMsg(name, preMsg, time, addToTop, msgid) {
 
         let nick = await NickCache.getNick(name) // re.data == null ? name : re.data.nick
 
         let msg
         
         try {
-            msg = await marked.parse(m)
-        } catch(e) {
-            console.log("解析消息失败: " + e)
-            msg = escapeHTML(m)
+            msg = await marked.parse(preMsg)
+        } catch(error) {
+            console.log("解析消息失败: " + error)
+            msg = escapeHTML(preMsg)
         }
 
         let temp
         if (name === localStorage.userName)
             temp = `<div class="chat-message-right">
                 <div class="message-content-with-nickname-right">
-                <span class="nickname">` + nick + `</span>
-                <div class="message-content mdui-card" tag="msg-card" id="msgid_` + msgid + `">
-                <span id="msg-content">` + msg + `</span>
+                <span class="nickname">${ nick }</span>
+                <div class="message-content mdui-card" tag="msg-card" id="msgid_${ msgid }">
+                <span id="msg-content">${ msg }</span>
+                <pre class="mdui-hidden" id="raw-msg-content">${ preMsg }</pre>
                 </div>
                 </div>
-                <img class="avatar" src="` + CurrentUser.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" />
+                <img class="avatar" src="${ CurrentUser.getUserHeadUrl(name) }" onerror="this.src='res/default_head.png'" />
                 </div>`
         else
             temp = `<div class="chat-message-left">
-                <img class="avatar" src="` + CurrentUser.getUserHeadUrl(name) + `" onerror="this.src='res/default_head.png'" />
+                <img class="avatar" src="${ CurrentUser.getUserHeadUrl(name) }" onerror="this.src='res/default_head.png'" />
                 <div class="message-content-with-nickname-left">
-                <span class="nickname">` + nick + `</span>
-                <div class="message-content mdui-card" tag="msg-card" id="msgid_` + msgid + `">
-                <span id="msg-content">` + msg + `</span>
+                <span class="nickname">${ nick }</span>
+                <div class="message-content mdui-card" tag="msg-card" id="msgid_${ msgid }">
+                <span id="msg-content">${ msg }</span>
+                <pre class="mdui-hidden" id="raw-msg-content">${ preMsg }</pre>
                 </div>
                 </div>
                 </div>`
 
-        let bn = new Date(t).getMinutes()
-        let e
-        if (re) {
-            this.addSystemMsg(temp, re)
-            if (this.bbn != bn) {
-                e = this.addSystemMsg(`<div class="mdui-center">` + new Date().format(t == null ? Date.parse("1000-1-1 00:00:00") : t, "yyyy年MM月dd日 hh:mm:ss") + `</div>`, re)
-                this.time = bn
+        let nowMinutes = new Date(time).getMinutes()
+        let msgElement
+        if (addToTop) {
+            this.addSystemMsg(temp, addToTop)
+            if (this.minutesCache != nowMinutes) {
+                msgElement = this.addSystemMsg(`<div class="mdui-center">` + new Date().format(time == null ? Date.parse("1000-1-1 00:00:00") : time, "yyyy年MM月dd日 hh:mm:ss") + `</div>`, addToTop)
+                this.time = nowMinutes
             }
         } else {
-            if (this.bbn != bn) {
-                e = this.addSystemMsg(`<div class="mdui-center">` + new Date().format(t == null ? Date.parse("1000-1-1 00:00:00") : t, "yyyy年MM月dd日 hh:mm:ss") + `</div>`, re)
-                this.time = bn
+            if (this.minutesCache != nowMinutes) {
+                msgElement = this.addSystemMsg(`<div class="mdui-center">` + new Date().format(time == null ? Date.parse("1000-1-1 00:00:00") : time, "yyyy年MM月dd日 hh:mm:ss") + `</div>`, addToTop)
+                this.time = nowMinutes
             }
-            this.addSystemMsg(temp, re)
+            this.addSystemMsg(temp, addToTop)
         }
 
-        this.bbn = new Date(t).getMinutes()
+        this.minutesCache = new Date(time).getMinutes()
 
-        return e
+        return msgElement
     }
     /**
      * 从服务器加载一些聊天记录
@@ -507,7 +509,10 @@ class ChatMsgAdapter {
             e = $(ele)
             let menuHtml = $.parseHTML(`<ul class="mdui-menu menu-on-message">
             <li class="mdui-menu-item">
-              <a onclick="copyText(\`` + e.find("#msg-content").text() + `\`)" class="mdui-ripple">复制</a>
+              <a onclick="copyText(\`${ e.find("#msg-content").text() }\`)" class="mdui-ripple">复制</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a onclick="mdui.alert(\`${ e.find("#raw-msg-content").text() }\`, '消息原文', () => { }, { confirmText: '关闭' })" class="mdui-ripple">原文</a>
             </li>
             <li class="mdui-menu-item">
               <a onclick="mdui.alert('未制作功能', '提示', () => { }, { confirmText: '关闭' })" class="mdui-ripple">转发</a>
