@@ -150,13 +150,15 @@ class CurrentUser {
             if (checkEmpty([a.target, a.msg, a.type]))
                 return
 
-            if ((ChatMsgAdapter.target === a.target) && (ChatMsgAdapter.type === a.type)) {
+            let currentPage = ChatPage.getCurrentChatPage()
+
+            if ((currentPage.chatTarget === a.target) && (currentPage.chatType === a.type)) {
                 let i = ChatMsgAdapter.isAtBottom()
-                await ChatMsgAdapter.addMsg(a.target, a.msg.msg, a.msg.time)
+                await currentPage.addMsg(a.target, a.msg.msg, a.msg.time, false, a.msg.msgid)
                 if (i) ChatMsgAdapter.scrollToBottom()
             }
 
-            if (ChatMsgAdapter.target !== localStorage.userName) {
+            if (currentPage.chatTarget !== localStorage.userName) {
                 let n = new 通知().setTitle("" + await NickCache.getNick(a.target)).setMessage(a.msg.msg).setIcon(CurrentUser.getUserHeadUrl(a.target)).show(async () => {
                     await ChatMsgAdapter.switchTo(a.target, a.type)
                     location.replace("#msgid_" + a.msg.msgid)
@@ -417,9 +419,9 @@ class ChatPage {
                 // 微机课闲的没事干玩玩 发现私聊会多发一个(一个是本地的, 另一个是发送成功的) 选择一个关掉就好了
                 // 这里我选择服务端不发送回调, 不然多设备同步会吵死
                 // 错了 应该是客户端少发条才对 不然不能多设备同步
-                if (ChatMsgAdapter.target !== localStorage.userName) {
+                if (this.chatTarget !== localStorage.userName) {
                     let i = ChatMsgAdapter.isAtBottom()
-                    await ChatMsgAdapter.addMsg(localStorage.userName, msg, re.data.time, re.data.msgid)
+                    await this.addMsg(localStorage.userName, msg, re.data.time, false, re.data.msgid)
                     if (i) ChatMsgAdapter.scrollToBottom()
                 }
             })
@@ -512,9 +514,6 @@ class ChatPage {
 class ChatMsgAdapter {
     static type
     static target
-    static minMsgId
-    static time
-    static minutesCache
     static resizeDick
     /**
      * 切换到某一个聊天对象
@@ -526,94 +525,7 @@ class ChatMsgAdapter {
             ChatPage.cached[name] = new ChatPage(name, await NickCache.getNick(name), type)
 
         ChatPage.cached[name].show()
-        /* viewBinding.tabChatSeesion.show()
-        viewBinding.tabChatSeesion.text(await NickCache.getNick(name))
-        viewBinding.tabChatSeesion.get(0).click()
-
-        this.type = type
-        this.target = name
-        this.minMsgId = null
-
-        viewBinding.pageChatSeesion.empty()
-
-        await this.loadMore()
-        this.scrollToBottom() */
     }
-    /**
-     * 发送消息
-     * @param {String} msg
-     */
-    static async send(msg) {
-        ChatPage.getCurrentChatPage().send(msg)
-        /* client.emit("user.sendSingleMsg", {
-            name: localStorage.userName,
-            target: this.target,
-            msg: msg,
-            accessToken: await CurrentUser.getAccessToken(),
-        }, async (re) => {
-            if (re.code !== 0)
-                return mdui.snackbar(re.msg)
-
-            viewBinding.inputMsg.val("")
-
-            // 微机课闲的没事干玩玩 发现私聊会多发一个(一个是本地的, 另一个是发送成功的) 选择一个关掉就好了
-            // 这里我选择服务端不发送回调, 不然多设备同步会吵死
-            // 错了 应该是客户端少发条才对 不然不能多设备同步
-            if ((ChatMsgAdapter.target !== localStorage.userName) && ChatMsgAdapter.type === "single") {
-                let i = ChatMsgAdapter.isAtBottom()
-                await ChatMsgAdapter.addMsg(localStorage.userName, msg, re.data.time, re.data.msgid)
-                if (i) ChatMsgAdapter.scrollToBottom()
-            }
-        }) */
-    }
-    /**
-     * 获取聊天消息记录
-     * @param {int} 起始点
-     * @param {int} 获取数量
-     */
-    static async getHistroy(start, limit) {
-        return new Promise(async (res, rej) => {
-            client.emit("user.getSingleChatHistroy", {
-                name: localStorage.userName,
-                target: this.target,
-                limit: limit,
-                accessToken: await CurrentUser.getAccessToken(),
-                startId: start,
-            }, (re) => {
-                if (re.code !== 0)
-                    return mdui.snackbar(re.msg)
-                res(re.data.histroy)
-            })
-        })
-    }
-    /**
-     * 加载更多聊天记录
-     * @param {int} 加载数量
-     */
-    static async loadMore(limit) {
-        ChatPage.getCurrentChatPage().loadMore(limit)
-        /* let histroy = await this.getHistroy(this.minMsgId, limit == null ? 13 : limit)
-        let chatPager = viewBinding.chatPager.get(0)
-
-        if (histroy.length == 0)
-            return mdui.snackbar("已经加载完了~")
-
-        let re = this.minMsgId != null
-        this.minMsgId = histroy[0].msgid - 1
-        let sc = 0
-        if (re) histroy = histroy.reverse()
-        for (let index in histroy) {
-            let i = histroy[index]
-            let e = await this.addMsg(i.name, i.msg, i.time, re, i.msgid)
-            // 因为某些因素直接DEBUG到吐血 断点继续都不报错 原因不明
-            sc = sc + (e == null ? 35 : getOffsetTop(chatPager, e.get(0)))
-        }
-        chatPager.scrollBy({
-            top: sc,
-            behavior: 'smooth'
-        }) */
-    }
-
     /**
      * 是否在底部
      * @returns {Boolean} 是否在底部
@@ -621,98 +533,6 @@ class ChatMsgAdapter {
     static isAtBottom() {
         let elementRect = viewBinding.pageChatSeesion.get(0).getBoundingClientRect()
         return (elementRect.bottom <= window.innerHeight)
-    }
-    /**
-     * 添加系统消息
-     * @param {String} 消息
-     * @param {String} 是否加到顶部
-     * @returns {jQuery} 消息元素
-     */
-    static addSystemMsg(m, re) {
-        let e
-        if (re)
-            // 加到头部
-            e = $($.parseHTML(m)).prependTo(viewBinding.pageChatSeesion)
-        else
-            // 加到尾部
-            e = $($.parseHTML(m)).appendTo(viewBinding.pageChatSeesion)
-        return e
-    }
-    // 添加消息 返回消息的JQ对象
-    // name: 用户id  m: 消息  t: 时间戳  re: 默认加到尾部  msgid: 消息id
-    /**
-     * 添加聊天记录
-     * @param {String} name
-     * @param {String} msg
-     * @param {String} type 
-     * @param {String} 是否加到头部
-     * @param {String || int} 消息id
-     * @returns {jQuery} 消息元素
-     */
-    static async addMsg(name, preMsg, time, addToTop, msgid) {
-
-        let nick = await NickCache.getNick(name) // re.data == null ? name : re.data.nick
-
-        let msg
-
-        try {
-            msg = await marked.parse(preMsg)
-        } catch (error) {
-            console.log("解析消息失败: " + error)
-            msg = escapeHTML(preMsg)
-        }
-
-        let temp
-        if (name === localStorage.userName)
-            temp = `<div class="chat-message-right">
-                <div class="message-content-with-nickname-right">
-                <span class="nickname">${nick}</span>
-                <div class="message-content mdui-card" tag="msg-card" id="msgid_${msgid}">
-                <span id="msg-content">${msg}</span>
-                <pre class="mdui-hidden" id="raw-msg-content">${preMsg}</pre>
-                </div>
-                </div>
-                <img class="avatar" src="${CurrentUser.getUserHeadUrl(name)}" onerror="this.src='res/default_head.png'" />
-                </div>`
-        else
-            temp = `<div class="chat-message-left">
-                <img class="avatar" src="${CurrentUser.getUserHeadUrl(name)}" onerror="this.src='res/default_head.png'" />
-                <div class="message-content-with-nickname-left">
-                <span class="nickname">${nick}</span>
-                <div class="message-content mdui-card" tag="msg-card" id="msgid_${msgid}">
-                <span id="msg-content">${msg}</span>
-                <pre class="mdui-hidden" id="raw-msg-content">${preMsg}</pre>
-                </div>
-                </div>
-                </div>`
-
-        let nowMinutes = new Date(time).getMinutes()
-        let msgElement
-        if (addToTop) {
-            this.addSystemMsg(temp, addToTop)
-            if (this.minutesCache != nowMinutes) {
-                msgElement = this.addSystemMsg(`<div class="mdui-center">${new Date().format(time == null ? Date.parse("1000-1-1 00:00:00") : time, "yyyy年MM月dd日 hh:mm:ss")}</div>`, addToTop)
-                this.time = nowMinutes
-            }
-        } else {
-            if (this.minutesCache != nowMinutes) {
-                msgElement = this.addSystemMsg(`<div class="mdui-center">${new Date().format(time == null ? Date.parse("1000-1-1 00:00:00") : time, "yyyy年MM月dd日 hh:mm:ss")}</div>`, addToTop)
-                this.time = nowMinutes
-            }
-            this.addSystemMsg(temp, addToTop)
-        }
-
-        this.minutesCache = new Date(time).getMinutes()
-
-        return msgElement
-    }
-    /**
-     * 从服务器加载一些聊天记录
-     * @param {int} 数量
-     */
-    static async loadMsgs(limit) {
-        let histroy = await this.getHistroy(this.msgList[0] == null ? null : this.msgList[0].msgid - 1, limit == null ? 13 : limit)
-        this.msgList = histroy
     }
     /**
      * 滑到底部

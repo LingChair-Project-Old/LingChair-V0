@@ -129,7 +129,7 @@
       <div
         style="margin-top: 50px;overflow: auto;width: 100%;max-width: 100%;height: 100%;max-height: 100%;min-height: 0;flex: 1 1 auto;display: flex;flex-direction: column;"
         n-id="chatPager">
-        <div class="mdui-center" style="margin: 15px;"><a href="javascript:;" onclick="ChatMsgAdapter.loadMore()"
+        <div class="mdui-center" style="margin: 15px;"><a href="javascript:;" onclick="ChatPage.getCurrentChatPage().loadMore()"
             class="mdui-text-color-theme">加载更多</a> | <a href="javascript:;"
             onclick="ChatMsgAdapter.scrollToBottom()" class="mdui-text-color-theme">回到底部</a></div>
         <div n-id="pageChatSeesion" class="chat-seesion" id="page-chat-seesion"></div>

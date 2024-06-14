@@ -41,7 +41,7 @@ viewBinding.drawerSignOut.click(() => {
 viewBinding.sendMsg.click((a) => {
     let text = viewBinding.inputMsg.val()
     if (text.trim() !== "")
-        ChatMsgAdapter.send(text)
+        ChatPage.getCurrentChatPage().send(text)
 })
 
 viewBinding.inputMsg.keydown((e) => {
