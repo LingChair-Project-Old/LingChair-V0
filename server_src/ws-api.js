@@ -149,18 +149,17 @@ let api = {
     },
 
     // 添加好友
-    // {name: 账号, accessToken: 访问令牌} 返回 {friends: []}
-    // WIP
+    // {name: 账号, accessToken: 访问令牌}
     "user.addFriend": (a, cb) => {
-        if (checkEmpty([a.name, a.accessToken]))
+        if (checkEmpty([a.name, a.target, a.accessToken]))
             return cb({ msg: "参数缺失", code: -1 })
 
-        let { msg, code, friends } = users.getFriends(a.name, a.accessToken)
+        let { msg, code } = users.addFriend(a.name, a.target, a.accessToken)
 
         if (code !== 0)
             return cb({ msg: msg, code: code })
 
-        cb({ msg: msg, code: 0, data: { friends: friends } })
+        cb({ msg: msg, code: 0 })
     },
 
     "user.getNick": (a, cb) => {

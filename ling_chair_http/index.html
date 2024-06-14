@@ -121,7 +121,7 @@
     <div class="mdui-tab mdui-accent-theme mdui-theme-color-auto" style="position: fixed; z-index: 114;width: 100%;"
       mdui-tab n-id="chatTab">
       <!-- 侧滑栏的 z-index 是2000, 在移动端会直接覆盖 -->
-      <a href="#page-chat-seesion" n-id="tabChatSeesion" class="mdui-ripple" style="text-transform: none;"></a>
+      <!-- <a href="#page-chat-seesion" n-id="tabChatSeesion" tag="chatTab" class="mdui-ripple" style="text-transform: none;"></a> -->
     </div>
     <!-- 滚动到底部咋这么难写... -->
     <div style="display: flex;flex-direction: column;">
@@ -132,8 +132,7 @@
         <div class="mdui-center" style="margin: 15px;"><a href="javascript:;" onclick="ChatMsgAdapter.loadMore()"
             class="mdui-text-color-theme">加载更多</a> | <a href="javascript:;"
             onclick="ChatMsgAdapter.scrollToBottom()" class="mdui-text-color-theme">回到底部</a></div>
-        <div n-id="pageChatSeesion" class="chat-seesion">
-        </div>
+        <div n-id="pageChatSeesion" class="chat-seesion" id="page-chat-seesion"></div>
         <!-- 输入框和聊天消息重叠的原因就是死人 scrollbar, 把自动调整的距离调小, margin调大就行了 -->
       </div>
       <!-- 妈的黑化了 私人玩意这么难整 早知道 z-index 弄死它得了 浪费我时间 我就没试过这么离谱的样式表 第三方库真难写CSS 就应该先写后端的 啊啊啊啊啊啊 -->

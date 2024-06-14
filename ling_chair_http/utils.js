@@ -42,6 +42,16 @@ const checkEmpty = (i) => {
     return (i == null) || ("" === i) || (0 === i)
 }
 
+// AI的力量太强了
+function getOffsetTop(parent, child) {
+    let top = 0
+    while (child && child !== parent) {
+      top += child.offsetTop
+      child = child.offsetParent
+    }
+    return top
+  }  
+
 function escapeHTML(str) {
     return str.replace(/[<>&"']/g, function (match) {
         switch (match) {

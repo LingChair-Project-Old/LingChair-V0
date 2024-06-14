@@ -23,14 +23,14 @@
     display: flex;
     justify-content: flex-end;
     align-items: flex-start;
-    margin: 13px;
+    margin: 13px 13px 13px 10%;
 }
 
 .chat-message-left {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    margin: 13px;
+    margin: 13px 10% 13px 13px;
 }
 
 .message-content {
@@ -39,9 +39,10 @@
     margin-left: 5px;
     margin-right: 5px;
     max-width: 100%;
+    min-width: 0%;
     white-space: normal;
     word-break: break-all;
-    font-size: medium;
+    /* font-size: medium; */
     /* 使用了 CardView 就不需要边框了 */
     /* border: 1.3px solid; */
     padding: 15px;
