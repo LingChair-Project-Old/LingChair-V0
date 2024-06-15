@@ -334,7 +334,7 @@ class ChatTabManager {
             })
             menu.open()
         }
-        viewBinding.chatTab.on('contextmenu click', 'a[tag=chatTab]', (e) => {
+        viewBinding.chatTab.on('contextmenu dblclick', 'a[tag=chatTab]', (e) => {
             let eventType = e.type
             let self = $(e.target)
 
@@ -344,8 +344,8 @@ class ChatTabManager {
                     e.preventDefault() // 阻止默认行为
                     callback(self)
                     break
-                case 'click':
-                    if (!isMobile()) return
+                case 'dblclick':
+                    //if (!isMobile()) return
                     callback(self)
                     break
             }
