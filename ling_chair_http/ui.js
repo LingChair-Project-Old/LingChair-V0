@@ -17,7 +17,7 @@ $.ajax({
 })
 
 // 关于页面
-viewBinding.menuAbout.click(() => mdui.alert('这是一个开源项目<br/>作者: MoonLeeeaf<br/>欢迎访问我们的<a class="mdui-text-color-theme-accent" href="https://github.com/LingChair/LingChair">项目主页</a>', '关于 铃之椅', () => { }, { confirmText: "关闭" }))
+viewBinding.menuAbout.click(() => mdui.alert('这是一个开源项目<br/>作者: MoonLeeeaf<br/>欢迎访问我们的<a class="mdui-text-color-theme" href="https://github.com/LingChair/LingChair">项目主页</a>', '关于 铃之椅', () => { }, { confirmText: "关闭" }))
 
 viewBinding.drawerChangeServer.click(() => {
     mdui.prompt('输入服务器地址...(为空则使用当前页面地址)', (value) => {
