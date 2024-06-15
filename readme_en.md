@@ -1,13 +1,13 @@
 [ [中文](readme.md) | English ]
 
 <div align="center">
-    <h1> LingChair </h1>
+    <h2> LingChair </h2>
 </div>
 
 Welcome to LingChair! This is an IM project that it provide a new communication way. And it serves people.
 
 > [!NOTE]
-> Due this project only provides Chinese, so it'll be hard for you to use it. I'm sorry that I have no time to translate them. This project is so large for me to rewrite, so it's still in Chinese.
+ I'm sorry that I have no time to translate this project to English. This project is so large for me to rewrite, so there're still a lot of texts in Chinese.
 > 
 > This project is still in progress, [Click me](final.md) to view progress. (Chinese)
 >  
