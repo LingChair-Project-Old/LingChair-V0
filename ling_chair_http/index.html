@@ -40,19 +40,11 @@
     <!-- 侧滑栏 -->
     <div class="mdui-drawer" id="main-drawer">
       <ul class="mdui-list" mdui-collapse="{accordion: true}">
-        <li class="mdui-list-item mdui-ripple">
+        <li class="mdui-list-item mdui-ripple" onclick="new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()">
           <div class="mdui-list-item-avatar">
             <img src="default_head.png" n-id="userHead" onerror="this.src='res/default_head.png'" />
           </div>
           <div class="mdui-list-item-content"><a n-id="helloText">早安</a>, <a n-id="userNick">Unknown</a></div>
-        </li>
-        <li class="mdui-list-item mdui-ripple" onclick="new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()">
-          <i class="mdui-list-item-icon mdui-icon material-icons">settings</i>
-          <div class="mdui-list-item-content">设置</div>
-        </li>
-        <li class="mdui-list-item mdui-ripple" n-id="drawerSignOut">
-          <i class="mdui-list-item-icon mdui-icon material-icons">exit_to_app</i>
-          <div class="mdui-list-item-content">登出</div>
         </li>
         <div class="mdui-subheader">聊天</div>
         <li class="mdui-collapse-item">
@@ -248,8 +240,7 @@
     <div class="mdui-dialog-content">
       <ul class="mdui-list">
         <div class="mdui-subheader">我的资料</div>
-        <li class="mdui-list-item mdui-ripple" mdui-dialog-close
-          onclick="(async () => {viewBinding.dialogEditNickNick.val(await NickCache.getNick(localStorage.userName));new mdui.Dialog(viewBinding.dialogEditNick.get(0)).open()})()">
+        <li class="mdui-list-item mdui-ripple" mdui-dialog-close onclick="(async () => {viewBinding.dialogEditNickNick.val(await NickCache.getNick(localStorage.userName));new mdui.Dialog(viewBinding.dialogEditNick.get(0)).open()})()">
           <i class="mdui-list-item-icon mdui-icon material-icons">edit</i>
           <div class="mdui-list-item-content">修改昵称</div>
         </li>
@@ -258,6 +249,14 @@
           <div class="mdui-list-item-content">上传头像</div>
         </li>
         <div class="mdui-subheader">客户端</div>
+        <li class="mdui-list-item mdui-ripple" n-id="drawerChangeServer" mdui-dialog-close>
+          <i class="mdui-list-item-icon mdui-icon material-icons">cloud_circle</i>
+          <div class="mdui-list-item-content">更换服务器</div>
+        </li>
+        <li class="mdui-list-item mdui-ripple" n-id="settingsDialogSignOut" mdui-dialog-close>
+          <i class="mdui-list-item-icon mdui-icon material-icons">exit_to_app</i>
+          <div class="mdui-list-item-content">登出</div>
+        </li>
       </ul>
     </div>
     <div class="mdui-dialog-actions">

@@ -23,16 +23,21 @@ viewBinding.drawerChangeServer.click(() => {
     mdui.prompt('输入服务器地址...(为空则使用当前页面地址)', (value) => {
         localStorage.server = value
         mdui.snackbar("更新成功, 刷新页面生效")
-    }, () => { }, {
+        new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()
+    }, () => {
+        new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()
+    }, {
         confirmText: "确定",
         cancelText: "取消"
     })
 })
 
-viewBinding.drawerSignOut.click(() => {
+viewBinding.settingsDialogSignOut.click(() => {
     mdui.confirm('确定要登出账号吗', () => {
         User.signOutAndReload()
-    }, () => { }, {
+    }, () => {
+        new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()
+    }, {
         confirmText: "确定",
         cancelText: "取消"
     })
