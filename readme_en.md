@@ -7,6 +7,8 @@
 Welcome to LingChair! This is an IM project that it provide a new communication way. And it serves people.
 
 > [!NOTE]
+> Due this project only provides Chinese, so it'll be hard for you to use it. I'm sorry that I have no time to translate them. This project is so large for me to rewrite, so it's still in Chinese.
+> 
 > This project is still in progress, [Click me](final.md) to view progress. (Chinese)
 >  
 > Comments and BUG report welcome
