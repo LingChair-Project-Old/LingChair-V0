@@ -263,6 +263,8 @@ class ContactsList {
 //             消息核心
 // ================================
 
+// 自古框架BUG多, 各种麻烦遭不住
+
 class ChatTabManager {
     static tabs = {}
     /**
@@ -274,8 +276,11 @@ class ChatTabManager {
         if (this.tabs[target]) return
         let tabElement = $($.parseHTML(`<a onclick="ChatMsgAdapter.switchTo('${target}');" tag="chatTab" id="chatTab_${target}" class="mdui-ripple" style="text-transform: none;">${title}</a>`))
         tabElement.appendTo(viewBinding.chatTab)
-        if (Object.keys(this.tabs).length == 0) new mdui.Tab(viewBinding.chatTab).handleUpdate()
+        // 就你MDUI的B事最多 加Tab还多一个下划线 删掉就解决了
+        $(".mdui-tab-indicator").remove()
+        new mdui.Tab(viewBinding.chatTab).handleUpdate()
         this.tabs[target] = tabElement
+        if (Object.keys(this.tabs).length == 1) tabElement.addClass("mdui-tab-active")
     }
     /**
      * 寻找Tab
@@ -290,7 +295,7 @@ class ChatTabManager {
      * @param { String } target
      */
     static click(target) {
-        // this.find(target).click()
+        this.find(target).get(0).click()
     }
     /**
      * 删除Tab
