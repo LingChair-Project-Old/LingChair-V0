@@ -1,8 +1,10 @@
-## 铃之椅
+[ 中文 | [English](readme_en.md) ]
+
+<div align="center">
+    <h1> 铃之椅 </h1>
+</div>
 
 欢迎来到铃之椅! 这是一个即时通讯项目, 为通讯提供更多的选择, 为人民服务
-
-[ 中文 | [English](readme_en.md) ]
 
 > [!NOTE]
 > 本项目仍在实验阶段, [点我](final.md)可查看进展
