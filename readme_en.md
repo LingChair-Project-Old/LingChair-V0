@@ -1,4 +1,8 @@
-## LingChair
+[ [中文](readme.md) | English ]
+
+<div align="center">
+    <h1> LingChair </h1>
+</div>
 
 Welcome to LingChair! This is an IM project that it provide a new communication way. And it serves people.
 
