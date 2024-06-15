@@ -9,12 +9,13 @@
 // ================================
 
 class CurrentUser {
+    /** @type { String } */
     static myAccessToken
     /**
      * 登录账号
-     * @param {String} name 
-     * @param {String} passwd 
-     * @param {Function} callback
+     * @param { String } name 
+     * @param { String } passwd 
+     * @param { Function } callback
      */
     static signIn(name, passwd, cb) {
         client.emit("user.signIn", {
@@ -29,9 +30,9 @@ class CurrentUser {
     }
     /**
      * 注册账号
-     * @param {String} name 
-     * @param {String} passwd 
-     * @param {Function} callback
+     * @param { String } name 
+     * @param { String } passwd 
+     * @param { Function } callback
      */
     static signUp(name, passwd, cb) {
         client.emit("user.signUp", {
@@ -46,8 +47,8 @@ class CurrentUser {
     }
     /**
      * 登录对话框中的登录逻辑
-     * @param {String} name 
-     * @param {String} passwd
+     * @param { String } name 
+     * @param { String } passwd
      */
     static signInWithDialog(name, passwd) {
         this.signIn(name, passwd, (re) => {
@@ -59,8 +60,8 @@ class CurrentUser {
     }
     /**
      * 设置昵称
-     * @param {String} nick
-     * @param {Function} callback
+     * @param { String } nick
+     * @param { Function } callback
      */
     static async setNick(nick, cb) {
         client.emit("user.setNick", {
@@ -75,16 +76,16 @@ class CurrentUser {
     }
     /**
      * 获取用户头像的链接
-     * @param {String} name
-     * @returns {String} headImageUrl
+     * @param { String } name
+     * @returns { String } headImageUrl
      */
     static getUserHeadUrl(name) {
         return client.io.uri + "/users_head/" + name + ".png"
     }
     /**
      * 获取访问密钥
-     * @param {String} name 
-     * @returns {Promise<String>} accessToken
+     * @param { String } name 
+     * @returns { Promise<String> } accessToken
      */
     static async getAccessToken(er) {
         if (this.myAccessToken == null)
@@ -104,7 +105,7 @@ class CurrentUser {
     }
     /**
      * 上传头像回调事件
-     * @param {Element} element 
+     * @param { Element } element 
      */
     static async uploadHeadImageCallback(self) {
         let img = self.files[0]
@@ -169,7 +170,7 @@ class CurrentUser {
     }
     /**
      * 打开资料卡
-     * @param {String} name
+     * @param { String } name
      */
     static async openProfileDialog(name) {
         viewBinding.dialogProfileHead.attr("src", CurrentUser.getUserHeadUrl(name))
@@ -186,8 +187,8 @@ class NickCache {
     static data = {}
     /**
      * 获取昵称
-     * @param {String} name
-     * @returns {String} nick
+     * @param { String } name
+     * @returns { String } nick
      */
     static async getNick(name) {
         return await new Promise((res, _rej) => {
@@ -227,7 +228,7 @@ class ContactsList {
             for (let index in ls) {
                 let name = ls[index]
                 let dick = await NickCache.getNick(name)
-                $($.parseHTML(`<li class="mdui-list-item mdui-ripple" mdui-drawer-close><div class="mdui-list-item-avatar"><img src="${ CurrentUser.getUserHeadUrl(name) }" onerror="this.src='res/default_head.png'" /></div><div class="mdui-list-item-content">` + dick + `</div></li>`)).appendTo(viewBinding.contactsList).click(() => {
+                $($.parseHTML(`<li class="mdui-list-item mdui-ripple" mdui-drawer-close><div class="mdui-list-item-avatar"><img src="${CurrentUser.getUserHeadUrl(name)}" onerror="this.src='res/default_head.png'" /></div><div class="mdui-list-item-content">` + dick + `</div></li>`)).appendTo(viewBinding.contactsList).click(() => {
                     ChatMsgAdapter.switchTo(name, "single")
                 })
             }
@@ -236,7 +237,7 @@ class ContactsList {
     }
     /**
      * 添加联系人/群峦
-     * @param {String} nameOrId
+     * @param { String } nameOrId
      */
     static async add(name, type) {
         if (type == "single") {
@@ -303,7 +304,9 @@ class ChatPage {
         this.chatType = type
         ChatTabManager.add(title, this.chatTarget)
         this.chatPageElement = $($.parseHTML(`<div class="chat-seesion" id="chatPageTargetIs${this.chatTarget}" target="${this.chatTarget}"></div>`))
+        this.chatPageElement.hide()
         this.chatPageElement.appendTo(viewBinding.pageChatSeesion)
+        ;(async () => await this.loadMore())()
     }
     /**
      * 获取当前的聊天栏
@@ -335,13 +338,12 @@ class ChatPage {
             tbe.removeClass("mdui-tab-active")
         }
 
-        $(this.chatPageElement).empty()
         $(this.chatPageElement).attr("actived", "true")
-        $(this.chatPageElement).show()
+        
         ChatTabManager.find(this.chatTarget).addClass("mdui-tab-active")
-
-        await this.loadMore()
-        ChatMsgAdapter.scrollToBottom()
+    
+        
+        $(this.chatPageElement).show()
     }
     /**
      * 连带Tab一起销毁
@@ -353,7 +355,7 @@ class ChatPage {
     }
     /**
      * 加载更多聊天记录
-     * @param {int} 加载数量
+     * @param { int } 加载数量
      */
     async loadMore(limit) {
         let histroy = await this.getHistroy(this.minMsgId, limit == null ? 13 : limit)
@@ -379,8 +381,8 @@ class ChatPage {
     }
     /**
      * 获取聊天消息记录
-     * @param {int} 起始点
-     * @param {int} 获取数量
+     * @param { int } 起始点
+     * @param { int } 获取数量
      */
     async getHistroy(start, limit) {
         if (this.chatType == "single")
@@ -517,8 +519,8 @@ class ChatMsgAdapter {
     static resizeDick
     /**
      * 切换到某一个聊天对象
-     * @param {String} name
-     * @param {String} type
+     * @param { String } name
+     * @param { String } type
      */
     static async switchTo(name, type) {
         if (!ChatPage.cached[name])
@@ -528,7 +530,7 @@ class ChatMsgAdapter {
     }
     /**
      * 是否在底部
-     * @returns {Boolean} 是否在底部
+     * @returns { Boolean } 是否在底部
      */
     static isAtBottom() {
         let elementRect = viewBinding.pageChatSeesion.get(0).getBoundingClientRect()
