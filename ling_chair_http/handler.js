@@ -271,7 +271,11 @@ class ChatTabManager {
      * @param { String } target
      */
     static add(title, target) {
-        $($.parseHTML(`<a onclick="ChatMsgAdapter.switchTo('${target}');" tag="chatTab" id="chatTab_${target}" class="mdui-ripple" style="text-transform: none;">${title}</a>`)).appendTo(viewBinding.chatTab)
+        if (this.tabs[target]) return
+        let tabElement = $($.parseHTML(`<a onclick="ChatMsgAdapter.switchTo('${target}');" tag="chatTab" id="chatTab_${target}" class="mdui-ripple" style="text-transform: none;">${title}</a>`))
+        tabElement.appendTo(viewBinding.chatTab)
+        if (Object.keys(this.tabs).length == 0) new mdui.Tab(viewBinding.chatTab).handleUpdate()
+        this.tabs[target] = tabElement
     }
     /**
      * 寻找Tab
@@ -279,14 +283,14 @@ class ChatTabManager {
      * @returns { jQuery } element
      */
     static find(target) {
-        return $("#chatTab_" + target)
+        return this.tabs[target]
     }
     /**
      * 点击Tab
      * @param { String } target
      */
     static click(target) {
-        this.find(this.target).click()
+        // this.find(target).click()
     }
     /**
      * 删除Tab
@@ -294,6 +298,7 @@ class ChatTabManager {
      */
     static remove(target) {
         this.find(target).remove()
+        this.tabs[target] = null
     }
 }
 
@@ -319,7 +324,7 @@ class ChatPage {
      * 获取当前聊天页面
      * @returns { ChatPage }
      */
-    static getCurrentChatPage(name) {
+    static getCurrentChatPage() {
         return ChatPage.cached[$(".chat-seesion[actived=true]").attr("target")]
     }
     /**
@@ -334,15 +339,12 @@ class ChatPage {
             let cpe = ChatPage.cached[k].chatPageElement
             cpe.attr("actived", null)
             cpe.hide()
-            let tbe = ChatTabManager.find(k)
-            tbe.removeClass("mdui-tab-active")
         }
 
         $(this.chatPageElement).attr("actived", "true")
         
-        ChatTabManager.find(this.chatTarget).addClass("mdui-tab-active")
+        ChatTabManager.click(this.chatTarget)
     
-        
         $(this.chatPageElement).show()
     }
     /**
@@ -364,18 +366,19 @@ class ChatPage {
         if (histroy.length == 0)
             return mdui.snackbar("已经加载完了~")
 
-        let re = this.minMsgId != null
+        let doReverse = this.minMsgId != null
         this.minMsgId = histroy[0].msgid - 1
-        let sc = 0
-        if (re) histroy = histroy.reverse()
+        // 英语水平不够(
+        let scroll幅度 = 0
+        if (doReverse) histroy = histroy.reverse()
         for (let index in histroy) {
             let i = histroy[index]
-            let e = await this.addMsg(i.name, i.msg, i.time, re, i.msgid)
+            let msgElement = await this.addMsg(i.name, i.msg, i.time, doReverse, i.msgid)
             // 因为某些因素直接DEBUG到吐血 断点继续都不报错 原因不明
-            sc = sc + (e == null ? 35 : getOffsetTop(chatPager, e.get(0)))
+            scroll幅度 = scroll幅度 + (msgElement == null ? 35 : getOffsetTop(chatPager, msgElement.get(0)))
         }
         chatPager.scrollBy({
-            top: sc,
+            top: scroll幅度,
             behavior: 'smooth'
         })
     }
