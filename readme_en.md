@@ -1,6 +1,6 @@
 ## LingChair
 
-Welcome to LingChair! This is an IM project, give ways to contact, for everyone.
+Welcome to LingChair! This is an IM project that it provide a new communication way. And it serves people.
 
 [ [中文](readme.md) | English ]
 
