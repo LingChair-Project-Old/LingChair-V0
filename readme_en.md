@@ -6,8 +6,6 @@
 
 Welcome to LingChair! This is an IM project that it provide a new communication way. And it serves people.
 
-[ [中文](readme.md) | English ]
-
 > [!NOTE]
 > This project is still in progress, [Click me](final.md) to view progress. (Chinese)
 >  
