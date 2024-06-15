@@ -306,16 +306,12 @@ class ChatTabManager {
         this.tabs[target] = null
     }
     static initTabElementEvents() {
-        let listeners = {}
         let menu
         let callback = (e) => {
             if (menu) menu.close()
             // 切到 div.message-content
             let ele = e.get(0)
-            while ($(ele).attr("tag") != "msg-card")
-                ele = ele.parentNode
-            e = $(ele)
-            let menuHtml = $.parseHTML(`<ul class="mdui-menu menu-on-message">
+            let menuHtml = $.parseHTML(`<ul class="mdui-menu">
             <li class="mdui-menu-item">
               <a onclick="copyText(\`${e.find("#msg-content").text()}\`)" class="mdui-ripple">复制</a>
             </li>
@@ -338,7 +334,7 @@ class ChatTabManager {
             })
             menu.open()
         }
-        viewBinding.pageChatSeesion.on('contextmenu mousedown mouseup', '.message-content', (e) => {
+        viewBinding.chatTab.on('contextmenu click', 'a[tag=chatTab]', (e) => {
             let eventType = e.type
             let self = $(e.target)
 
@@ -348,16 +344,9 @@ class ChatTabManager {
                     e.preventDefault() // 阻止默认行为
                     callback(self)
                     break
-                case 'mousedown':
+                case 'click':
                     if (!isMobile()) return
-                    listeners[self + ""] = setTimeout(() => {
-                        callback(self)
-                    }, 300) // 300颗够吗 应该够吧
-                    break
-                case 'mouseup':
-                    if (!isMobile()) return
-                    clearTimeout(listeners[self + ""])
-                    listeners[self + ""] = null
+                    callback(self)
                     break
             }
         })
