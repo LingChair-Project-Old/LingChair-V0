@@ -305,6 +305,63 @@ class ChatTabManager {
         this.find(target).remove()
         this.tabs[target] = null
     }
+    static initTabElementEvents() {
+        let listeners = {}
+        let menu
+        let callback = (e) => {
+            if (menu) menu.close()
+            // 切到 div.message-content
+            let ele = e.get(0)
+            while ($(ele).attr("tag") != "msg-card")
+                ele = ele.parentNode
+            e = $(ele)
+            let menuHtml = $.parseHTML(`<ul class="mdui-menu menu-on-message">
+            <li class="mdui-menu-item">
+              <a onclick="copyText(\`${e.find("#msg-content").text()}\`)" class="mdui-ripple">复制</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a onclick="mdui.alert(\`${e.find("#raw-msg-content").text()}\`, '消息原文', () => { }, { confirmText: '关闭' })" class="mdui-ripple">原文</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a onclick="mdui.alert('未制作功能', '提示', () => { }, { confirmText: '关闭' })" class="mdui-ripple">转发</a>
+            </li>
+            </ul>`)
+            let $menu = $(menuHtml)
+            e.before($menu)
+            menu = new mdui.Menu(e.get(0), menuHtml, {
+                position: "bottom",
+                align: "auto",
+                // covered: true,
+            })
+            $menu.on('closed.mdui.menu', () => {
+                $(menuHtml).remove()
+            })
+            menu.open()
+        }
+        viewBinding.pageChatSeesion.on('contextmenu mousedown mouseup', '.message-content', (e) => {
+            let eventType = e.type
+            let self = $(e.target)
+
+            // 根据事件类型执行不同操作
+            switch (eventType) {
+                case 'contextmenu':
+                    e.preventDefault() // 阻止默认行为
+                    callback(self)
+                    break
+                case 'mousedown':
+                    if (!isMobile()) return
+                    listeners[self + ""] = setTimeout(() => {
+                        callback(self)
+                    }, 300) // 300颗够吗 应该够吧
+                    break
+                case 'mouseup':
+                    if (!isMobile()) return
+                    clearTimeout(listeners[self + ""])
+                    listeners[self + ""] = null
+                    break
+            }
+        })
+    }
 }
 
 class ChatPage {

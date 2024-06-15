@@ -50,8 +50,8 @@ else {
 Stickyfill.add($("*").filter((a, b) => $(b).css('position') === 'sticky'))
 
 ChatMsgAdapter.initMsgElementEvents()
-
 ChatMsgAdapter.initInputResizer()
+ChatTabManager.initTabElementEvents()
 
 const showLinkDialog = (link) => mdui.alert(decodeURI(link) + "<br/>如果你确认此链接是安全的, 那么请<a class=\"mdui-text-color-theme\" href=\"" + link + "\">点我</a>", '链接', () => { }, { confirmText: "关闭" })
 
