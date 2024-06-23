@@ -615,7 +615,7 @@ class ChatMsgAdapter {
                 // < 0 为窗口变大
                 // cnm的，调试十万次就你tm检测不到底是吧，就你语法天天错误是吧
                 // 欺负我现在用不了电脑
-                top: -(ledi) * ((ledi < 0 && this.isAtBottom()) ? 6 : -1), // (ledi < 0 ? 6 : 6),
+                top: (ledi >= 0 ? ledi * 2 : 60),
                 behavior: 'smooth'
             })
             this.resizeDick = window.innerHeight
