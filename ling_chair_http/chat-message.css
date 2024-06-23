@@ -19,14 +19,14 @@
  * limitations under the License.
  */
 
-.chat-message-right {
+.chat-message.right {
     display: flex;
     justify-content: flex-end;
     align-items: flex-start;
     margin: 13px 13px 13px 10%;
 }
 
-.chat-message-left {
+.chat-message.left {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
@@ -71,15 +71,14 @@
     /* 左对齐元素 */
 }
 
-.chat-message-left .message-content-with-nickname-left .nickname,
-.chat-message-right .message-content-with-nickname-right .nickname {
+.chat-message .message-content-with-nickname-left .nickname,
+.chat-message .message-content-with-nickname-right .nickname {
     margin-right: 5px;
     font-size: medium;
     margin-top: 3px;
 }
 
-.chat-message-left > .avatar,
-.chat-message-right > .avatar {
+.chat-message > .avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;

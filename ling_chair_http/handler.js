@@ -523,7 +523,7 @@ class ChatPage {
 
         let temp
         if (name === localStorage.userName)
-            temp = `<div class="chat-message-right">
+            temp = `<div class="chat-message right">
                 <div class="message-content-with-nickname-right">
                 <span class="nickname">${nick}</span>
                 <div class="message-content mdui-card" tag="msg-card" id="msgid_${msgid}">
@@ -534,7 +534,7 @@ class ChatPage {
                 <img class="avatar" src="${CurrentUser.getUserHeadUrl(name)}" onerror="this.src='res/default_head.png'" />
                 </div>`
         else
-            temp = `<div class="chat-message-left">
+            temp = `<div class="chat-message left">
                 <img class="avatar" src="${CurrentUser.getUserHeadUrl(name)}" onerror="this.src='res/default_head.png'" />
                 <div class="message-content-with-nickname-left">
                 <span class="nickname">${nick}</span>
@@ -610,12 +610,13 @@ class ChatMsgAdapter {
             // CSS 牵一发而动全身 因此这个减少的数值是每天都要更改的
             viewBinding.chatPager.height(window.innerHeight - viewBinding.inputToolbar.height() - $("header.mdui-appbar").height() - viewBinding.chatTab.height() - 17)
             let ledi = this.resizeDick - window.innerHeight
+            let h = $('.chat-seesion[actived=true] > .chat-message:last-child').height()
             if (isMobile()) viewBinding.chatPager.get(0).scrollBy({
                 // 5.19晚10：56分调配出来的秘方
                 // < 0 为窗口变大
                 // cnm的，调试十万次就你tm检测不到底是吧，就你语法天天错误是吧
                 // 欺负我现在用不了电脑
-                top: (ledi >= 0 ? ledi * 2 : 60),
+                top: (ledi > 0 ? (this.isAtBottom() ? viewBinding.inputToolbar.height() : -h * ledi / 20) : -h * ledi / 20),
                 behavior: 'smooth'
             })
             this.resizeDick = window.innerHeight
