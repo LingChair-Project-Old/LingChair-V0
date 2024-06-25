@@ -11013,12 +11013,11 @@ select.mdui-select[multiple] option:last-child {
   max-height: 72px;
   margin: 0 auto;
   padding: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
 }
-.mdui-tab a {
+/* Mod: 防止匹配到更次的a */
+.mdui-tab > a {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
