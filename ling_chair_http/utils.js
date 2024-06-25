@@ -208,6 +208,45 @@ class Hash {
     }
 }
 
+class CachedString {
+    static cache = {}
+    /**
+     * 添加缓存文本
+     * @param {String} 欲缓存的文本 
+     * @returns {String} 该文本的ID
+     */
+    static addToList(str) {
+        let id = Hash.sha256(str)
+        this.cache[id] = str
+        return id
+    }
+    /**
+     * 回收字符
+     * @param {String} 该文本的ID 
+     */
+    static recycle(id) {
+        this.cache[id] = null
+    }
+    /**
+     * 根据ID获取文本
+     * @param {String} 该文本的ID 
+     * @returns {String} 文本
+     */
+    static get(id) {
+        return this.cache[id]
+    }
+    /**
+     * 根据ID获取文本并回收
+     * @param {String} 该文本的ID 
+     * @returns {String} 文本
+     */
+     static getAndRecycle(id) {
+        let t = this.get(id)
+        this.recycle(id)
+        return t
+    }
+}
+
 window.copyText = copyText
 window.NData = NData
 window.escapeHTML = escapeHTML
@@ -216,3 +255,4 @@ window.checkEmpty = checkEmpty
 window.sleep = sleep 
 window.Hash = Hash
 window.通知 = 通知
+window.CachedString = CachedString

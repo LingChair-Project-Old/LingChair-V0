@@ -638,12 +638,16 @@ class ChatMsgAdapter {
             while ($(ele).attr("tag") != "msg-card")
                 ele = ele.parentNode
             e = $(ele)
+
+            let rawText = e.find("#raw-msg-content").text()
+            let text = e.find("#msg-content").text()
+
             let menuHtml = $.parseHTML(`<ul class="mdui-menu menu-on-message">
             <li class="mdui-menu-item">
-              <a onclick="copyText(\`${e.find("#msg-content").text()}\`)" class="mdui-ripple">复制</a>
+              <a onclick="copyText(CachedString.getAndRecycle('${CachedString.addToList(text)}'))" class="mdui-ripple">复制</a>
             </li>
             <li class="mdui-menu-item">
-              <a onclick="mdui.alert(\`${e.find("#raw-msg-content").text()}\`, '消息原文', () => { }, { confirmText: '关闭' })" class="mdui-ripple">原文</a>
+              <a onclick="mdui.alert(CachedString.getAndRecycle('${CachedString.addToList(rawText)}'), '消息原文', () => { }, { confirmText: '关闭' })" class="mdui-ripple">原文</a>
             </li>
             <li class="mdui-menu-item">
               <a onclick="mdui.alert('未制作功能', '提示', () => { }, { confirmText: '关闭' })" class="mdui-ripple">转发</a>
