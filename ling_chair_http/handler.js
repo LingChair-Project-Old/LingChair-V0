@@ -274,7 +274,7 @@ class ChatTabManager {
      */
     static add(title, target) {
         if (this.tabs[target]) return
-        let tabElement = $($.parseHTML(`<a onclick="ChatMsgAdapter.switchTo('${target}');" tag="chatTab" id="chatTab_${target}" class="mdui-ripple" style="text-transform: none;">${title}</a>`))
+        let tabElement = $($.parseHTML(`<a onclick="ChatMsgAdapter.switchTo('${target}');" tag="chatTab" id="chatTab_${target}" target="${target}" class="mdui-ripple" style="text-transform: none;">${title}</a>`))
         tabElement.appendTo(viewBinding.chatTab)
         // 就你MDUI的B事最多 加Tab还多一个下划线 删掉就解决了
         $(".mdui-tab-indicator").remove()
@@ -309,17 +309,14 @@ class ChatTabManager {
         let menu
         let callback = (e) => {
             if (menu) menu.close()
-            // 切到 div.message-content
+            // 切到 chatTab
             let ele = e.get(0)
             let menuHtml = $.parseHTML(`<ul class="mdui-menu">
             <li class="mdui-menu-item">
-              <a onclick="copyText(\`${e.find("#msg-content").text()}\`)" class="mdui-ripple">复制</a>
-            </li>
-            <li class="mdui-menu-item">
-              <a onclick="mdui.alert(\`${e.find("#raw-msg-content").text()}\`, '消息原文', () => { }, { confirmText: '关闭' })" class="mdui-ripple">原文</a>
-            </li>
-            <li class="mdui-menu-item">
-              <a onclick="mdui.alert('未制作功能', '提示', () => { }, { confirmText: '关闭' })" class="mdui-ripple">转发</a>
+              <a onclick="CachedData.getAndRecycle('${CachedData.addToList(() => {
+                $(ele.previousElementSibling).click()
+                ChatPage.getChatSeesion($(ele).attr('target')).remove()
+              })}')()" class="mdui-ripple">关闭</a>
             </li>
             </ul>`)
             let $menu = $(menuHtml)
@@ -365,6 +362,14 @@ class ChatPage {
         ;(async () => await this.loadMore())()
     }
     /**
+     * 获取某个聊天栏
+     * @param { String } target
+     * @returns { jQuery }
+     */
+     static getChatSeesion(target) {
+        return ChatPage.cached[target]
+    }
+    /**
      * 获取当前的聊天栏
      * @returns { jQuery }
      */
@@ -376,7 +381,7 @@ class ChatPage {
      * @returns { ChatPage }
      */
     static getCurrentChatPage() {
-        return ChatPage.cached[$(".chat-seesion[actived=true]").attr("target")]
+        return this.getChatSeesion($(".chat-seesion[actived=true]").attr("target"))
     }
     /**
      * 切换选择的聊天对象
@@ -387,7 +392,7 @@ class ChatPage {
         this.minMsgId = null
 
         for (let k of Object.keys(ChatPage.cached)) {
-            let cpe = ChatPage.cached[k].chatPageElement
+            let cpe = ChatPage.getChatSeesion(k).chatPageElement
             cpe.attr("actived", null)
             cpe.hide()
         }
@@ -644,10 +649,10 @@ class ChatMsgAdapter {
 
             let menuHtml = $.parseHTML(`<ul class="mdui-menu menu-on-message">
             <li class="mdui-menu-item">
-              <a onclick="copyText(CachedString.getAndRecycle('${CachedString.addToList(text)}'))" class="mdui-ripple">复制</a>
+              <a onclick="copyText(CachedString.getAndRecycle('${CachedData.addToList(text)}'))" class="mdui-ripple">复制</a>
             </li>
             <li class="mdui-menu-item">
-              <a onclick="mdui.alert(CachedString.getAndRecycle('${CachedString.addToList(rawText)}'), '消息原文', () => { }, { confirmText: '关闭' })" class="mdui-ripple">原文</a>
+              <a onclick="mdui.alert(CachedString.getAndRecycle('${CachedData.addToList(rawText)}'), '消息原文', () => { }, { confirmText: '关闭' })" class="mdui-ripple">原文</a>
             </li>
             <li class="mdui-menu-item">
               <a onclick="mdui.alert('未制作功能', '提示', () => { }, { confirmText: '关闭' })" class="mdui-ripple">转发</a>

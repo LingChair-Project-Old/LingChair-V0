@@ -208,12 +208,12 @@ class Hash {
     }
 }
 
-class CachedString {
+class CachedData {
     static cache = {}
     /**
-     * 添加缓存文本
-     * @param {String} 欲缓存的文本 
-     * @returns {String} 该文本的ID
+     * 添加缓存对象
+     * @param {Object} 欲缓存的对象
+     * @returns {String} 该对象的ID
      */
     static addToList(str) {
         let id = Hash.sha256(str)
@@ -222,15 +222,15 @@ class CachedString {
     }
     /**
      * 回收字符
-     * @param {String} 该文本的ID 
+     * @param {String} 该对象的ID 
      */
     static recycle(id) {
         this.cache[id] = null
     }
     /**
      * 根据ID获取文本
-     * @param {String} 该文本的ID 
-     * @returns {String} 文本
+     * @param {String} 该对象的ID 
+     * @returns {Object} 对象
      */
     static get(id) {
         return this.cache[id]
@@ -238,7 +238,7 @@ class CachedString {
     /**
      * 根据ID获取文本并回收
      * @param {String} 该文本的ID 
-     * @returns {String} 文本
+     * @returns {Object} 对象
      */
      static getAndRecycle(id) {
         let t = this.get(id)
@@ -255,4 +255,4 @@ window.checkEmpty = checkEmpty
 window.sleep = sleep 
 window.Hash = Hash
 window.通知 = 通知
-window.CachedString = CachedString
+window.CachedString = CachedData
