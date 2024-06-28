@@ -310,13 +310,11 @@ class ChatTabManager {
         let callback = (e) => {
             if (menu) menu.close()
             // 切到 chatTab
+            document.getElementById("").previousElementSibling
             let ele = e.get(0)
             let menuHtml = $.parseHTML(`<ul class="mdui-menu">
             <li class="mdui-menu-item">
-              <a onclick="CachedData.getAndRecycle('${CachedData.addToList(() => {
-                $(ele.previousElementSibling).click()
-                ChatPage.getChatSeesion($(ele).attr('target')).remove()
-              })}')()" class="mdui-ripple">关闭</a>
+              <a onclick="let ele=CachedData.getAndRecycle('${CachedData.addToList(ele)}');ChatTabManager.click($(ele.previousElementSibling).attr('target'));ChatPage.getChatSeesion($(ele).attr('target')).remove()" class="mdui-ripple">关闭</a>
             </li>
             </ul>`)
             let $menu = $(menuHtml)
@@ -409,7 +407,7 @@ class ChatPage {
     remove() {
         ChatTabManager.remove(this.chatTarget)
         ChatPage.cached[this.chatTarget].chatPageElement.remove()
-        ChatPage.cached[this.chatTarget] = null
+        delete ChatPage.cached[this.chatTarget]
     }
     /**
      * 加载更多聊天记录
