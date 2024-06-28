@@ -215,9 +215,9 @@ class CachedData {
      * @param {Object} 欲缓存的对象
      * @returns {String} 该对象的ID
      */
-    static addToList(str) {
-        let id = Hash.sha256(str)
-        this.cache[id] = str
+    static addToList(obj) {
+        let id = Hash.sha256(obj)
+        this.cache[id] = obj
         return id
     }
     /**
