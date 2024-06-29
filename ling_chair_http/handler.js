@@ -310,7 +310,7 @@ class ChatTabManager {
         let callback = (e) => {
             if (menu) menu.close()
             // 切到 chatTab
-            document.getElementById("").previousElementSibling
+            // document.getElementById("").previousElementSibling
             let ele = e.get(0)
             let menuHtml = $.parseHTML(`<ul class="mdui-menu">
             <li class="mdui-menu-item">
