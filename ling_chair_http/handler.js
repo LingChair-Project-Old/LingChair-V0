@@ -295,6 +295,7 @@ class ChatTabManager {
      * @param { String } target
      */
     static click(target) {
+        console.log(target, this.find(target), this.tabs)
         this.find(target).get(0).click()
     }
     /**
@@ -312,9 +313,11 @@ class ChatTabManager {
             // 切到 chatTab
             // document.getElementById("").previousElementSibling
             let ele = e.get(0)
+            while ($(ele).attr("tag") != "chatTab")
+                ele = ele.parentNode
             let menuHtml = $.parseHTML(`<ul class="mdui-menu">
             <li class="mdui-menu-item">
-              <a onclick="let ele=CachedData.getAndRecycle('${CachedData.addToList(ele)}');ChatTabManager.click($(ele.previousElementSibling).attr('target'));ChatPage.getChatSeesion($(ele).attr('target')).remove()" class="mdui-ripple">关闭</a>
+              <a onclick="let ele=CachedData.getAndRecycle('${CachedData.addToList(ele)}');if(ele.previousElementSibling.previousElementSibling){ChatTabManager.click($(ele.previousElementSibling.previousElementSibling).attr('target'));}ChatPage.getChatSeesion($(ele).attr('target')).remove()" class="mdui-ripple">关闭</a>
             </li>
             </ul>`)
             let $menu = $(menuHtml)
