@@ -18,6 +18,16 @@ const process = require("process")
 const vals = require("./val")
 const color = require("./color")
 
+// https://tool.lu/asciipainting/index.html?q=Geometric%20figures&type=0&page=2
+const banner = `${color.blue}
+   .+------+
+ .' |    .'|   ${color.green}为人民服务————${color.blue}
++---+--+'  |   ${color.red}铃之椅 - Node.js${color.blue}
+|  .+--+---+   ${color.yellow}GitHub @MoonLeeeaf${color.blue}
+|.'    | .'
++------+'${color.none}
+`
+
 //定义 Http 服务器回调
 let httpServerCallback = require("./http-api")
 
@@ -87,7 +97,6 @@ wsServer.on("connect", (client) => {
 
 httpServer.listen(vals.LINGCHAIR_SERVER_CONFIG.port)
 
-console.log(color.red + "=== 铃之椅 - Server ===" + color.none + "\n\r")
-console.log(color.yellow + "Github: MoonLeeeaf" + color.none)
+console.log(banner)
 log(color.green + "运行服务于端口 " + vals.LINGCHAIR_SERVER_CONFIG.port + " 上，" + (vals.LINGCHAIR_SERVER_CONFIG.useHttps == true ? "已" : "未") + "使用 HTTPS" + color.none)
 log(color.green + "服务已启动..." + color.none)
