@@ -295,7 +295,6 @@ class ChatTabManager {
      * @param { String } target
      */
     static click(target) {
-        console.log(target, this.find(target), this.tabs)
         this.find(target).get(0).click()
     }
     /**
