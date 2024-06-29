@@ -4,7 +4,7 @@
  * 铃之椅 网页端
  */
 
- html, body {
+html, body {
     max-height: 100%;
     margin: 0;
     padding: 0;
@@ -34,6 +34,7 @@ body {
     position: sticky;
     bottom: 0;
     display: block;
+    align-self: center;
 }
 
 .chat-seesion {
