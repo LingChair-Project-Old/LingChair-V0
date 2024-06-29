@@ -1,7 +1,9 @@
-[ 中文 | [English](readme_en.md) ]
-
 <div align="center">
     <h2> 铃之椅 </h2>
+</div>
+
+<div align="center">
+    中文 | [English](readme_en.md)
 </div>
 
 欢迎来到铃之椅! 这是一个即时通讯项目, 为通讯提供更多的选择, 为人民服务
@@ -10,6 +12,20 @@
 > 本项目仍在实验阶段, [点我](final.md)可查看进展
 >  
 > 欢迎各位提出项目修改意见
+
+### 关联项目
+
+客户端 & 服务端:
+
+  * LingChair-Node.js (本仓库)
+
+客户端:
+
+  * 暂无
+
+服务端:
+
+  * 暂无
 
 ### 使用
 
