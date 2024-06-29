@@ -2,10 +2,6 @@
     <h2> 铃之椅 </h2>
 </div>
 
-<div align="center">
-    中文 | [English](readme_en.md)
-</div>
-
 欢迎来到铃之椅! 这是一个即时通讯项目, 为通讯提供更多的选择, 为人民服务
 
 > [!NOTE]

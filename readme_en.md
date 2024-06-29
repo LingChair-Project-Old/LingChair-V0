@@ -2,10 +2,6 @@
     <h2> LingChair </h2>
 </div>
 
-<div align="center">
-    [中文](readme.md) | English
-</div>
-
 Welcome to LingChair! This is an IM project that it provide a new communication way. And it serves people.
 
 > [!NOTE]
