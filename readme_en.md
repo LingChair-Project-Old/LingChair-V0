@@ -5,7 +5,7 @@
 Welcome to LingChair! This is an IM project that it provide a new communication way. And it serves people.
 
 > [!NOTE]
-> This project is on G‍i‍t‍H‍u‍‍b ONLY,EVERYONE MUSTN'T CLONE ANYTHING FROM THIS PROJECT.
+> THIS PROJECT IS ON G‍I‍T‍H‍U‍‍B ONLY,EVERYONE MUSTN'T CLONE ANYTHING FROM THIS PROJECT.
 >  
 > My English is not so good as a normal Englishmen, so you need a translator to read Chinese texts. And sometimes this document is outdated, I'm sorry with that.
 > 
