@@ -303,7 +303,9 @@ class ChatTabManager {
      */
     static remove(target) {
         this.find(target).remove()
-        this.tabs[target] = null
+        delete this.tabs[target]
+        if(Object.keys(this.tabs).length == 0)
+            viewBinding.chatTab.find('.mdui-tab-indicator').remove()
     }
     static initTabElementEvents() {
         let menu
@@ -317,7 +319,7 @@ class ChatTabManager {
             // ele.previousElementSibling 是 Menu 的 Element, 因此改写成 ele.previousElementSibling.previousElementSibling
             let menuHtml = $.parseHTML(`<ul class="mdui-menu">
             <li class="mdui-menu-item">
-              <a onclick="let ele=CachedData.getAndRecycle('${CachedData.addToList(ele)}');let elenp=ele.previousElementSibling.previousElementSibling;if(!elenp){elenp=ele.nextElementSibling};if(elenp){ChatTabManager.click($(elenp).attr('target'));}ChatPage.getChatSeesion($(ele).attr('target')).remove();if(elenp){ChatTabManager.click($(elenp).attr('target'));}" class="mdui-ripple">关闭</a>
+              <a onclick="let ele=CachedData.getAndRecycle('${CachedData.addToList(ele)}');let elenp=ele.previousElementSibling.previousElementSibling;if(!elenp){elenp=ele.nextElementSibling};let canclick=$(elenp).attr('target');if(canclick){ChatTabManager.click(canclick);}ChatPage.getChatSeesion($(ele).attr('target')).remove();if(canclick){ChatTabManager.click(canclick);}" class="mdui-ripple">关闭</a>
             </li>
             </ul>`)
             let $menu = $(menuHtml)
