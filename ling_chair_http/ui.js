@@ -17,10 +17,10 @@ $.ajax({
 })
 
 // 关于页面
-viewBinding.menuAbout.click(() => mdui.alert('这是一个开源项目<br/>作者: MoonLeeeaf<br/>欢迎访问我们的<a class="mdui-text-color-theme" href="https://github.com/LingChair/LingChair">项目主页</a>', '关于 铃之椅', () => { }, { confirmText: "关闭" }))
+viewBinding.menuAbout.click(() => mdui.alert('为人民服务<br/>GitHub @MoonLeeeaf<br/>欢迎访问我们的<a class="mdui-text-color-theme" href="https://github.com/LingChair/LingChair">项目主页</a>', '关于 铃之椅', () => { }, { confirmText: "关闭" }))
 
 viewBinding.drawerChangeServer.click(() => {
-    mdui.prompt('输入服务器地址...(为空则使用当前页面地址)', (value) => {
+    mdui.prompt('输入服务器地址...(为空则使用当前地址)', (value) => {
         localStorage.server = value
         mdui.snackbar("更新成功, 刷新页面生效")
         new mdui.Dialog(viewBinding.dialogSettings.get(0)).open()
