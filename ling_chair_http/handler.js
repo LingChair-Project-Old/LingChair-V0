@@ -315,6 +315,7 @@ class ChatTabManager {
             let ele = e.get(0)
             while ($(ele).attr("tag") != "chatTab")
                 ele = ele.parentNode
+            // ele.previousElementSibling 是 Menu 的 Element, 因此改写成 ele.previousElementSibling.previousElementSibling
             let menuHtml = $.parseHTML(`<ul class="mdui-menu">
             <li class="mdui-menu-item">
               <a onclick="let ele=CachedData.getAndRecycle('${CachedData.addToList(ele)}');if(ele.previousElementSibling.previousElementSibling){ChatTabManager.click($(ele.previousElementSibling.previousElementSibling).attr('target'));}ChatPage.getChatSeesion($(ele).attr('target')).remove()" class="mdui-ripple">关闭</a>
