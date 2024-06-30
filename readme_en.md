@@ -5,7 +5,7 @@
 Welcome to LingChair! This is an IM project that it provide a new communication way. And it serves people.
 
 > [!NOTE]
-> THIS PROJECT IS ON G‍I‍T‍H‍U‍‍B ONLY,**EVERYONE MUSTN'T COPY ANYTHING ANd UPLOAD TO ANYWHERE WITHOUT MY PERMISSION.** <!-- GitCode, 说的就是你, 到时候如果被我发现你搬我仓库我迟早要找你算账 -->
+> THIS PROJECT IS ON G‍I‍T‍H‍U‍‍B ONLY,**EVERYONE MUSTN'T COPY ANYTHING AND UPLOAD TO ANYWHERE WITHOUT MY PERMISSION.** <!-- GitCode, 说的就是你, 到时候如果被我发现你搬我仓库我迟早要找你算账 -->
 >  
 > My English is not so good as a normal Englishmen, so you need a translator to read Chinese texts. And sometimes this document is outdated, I'm sorry with that.
 > 
