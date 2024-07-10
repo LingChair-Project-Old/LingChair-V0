@@ -4,9 +4,7 @@
  * 铃之椅 Node 服务端
  */
 
-const log = (t) => {
-    console.log("[" + new Date().toLocaleTimeString('en-US', { hour12: false }) + "] " + t)
-}
+const { log, loge, logw } = require("./log")
 
 const msgs = require("./api-msgs")
 const users = require("./api-users")
@@ -48,7 +46,7 @@ let api = {
         if (!users.checkRefreshToken(a.name, a.refreshToken))
             return cb({ code: -1, msg: "刷新令牌错误", invalid: true })
 
-        log(color.yellow + "客户端 " + client.handshake.address + " 完成了用户 " + a.name + " 的验证" + color.none)
+        logw(`客户端 ${client.handshake.address} 完成了用户 ${a.name} 的验证`)
 
         // 更新映射
         client.handshake.auth.passCheck = true
