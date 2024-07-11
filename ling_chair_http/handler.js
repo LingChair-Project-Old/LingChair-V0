@@ -232,7 +232,23 @@ class ContactsList {
                     ChatMsgAdapter.switchTo(name, "single")
                 })
             }
+        })
+        client.emit("user.getGroups", {
+            name: localStorage.userName,
+            accessToken: await CurrentUser.getAccessToken(),
+        }, async (re) => {
+            if (re.code !== 0)
+                return mdui.snackbar(re.msg)
 
+            viewBinding.groupsList.empty()
+            let ls = re.data.groups
+            for (let index in ls) {
+                let name = ls[index]
+                let dick = await NickCache.getNick(name)
+                $($.parseHTML(`<li class="mdui-list-item mdui-ripple" mdui-drawer-close><div class="mdui-list-item-avatar"><img src="${CurrentUser.getUserHeadUrl(name)}" onerror="this.src='res/default_head.png'" /></div><div class="mdui-list-item-content">` + dick + `</div></li>`)).appendTo(viewBinding.groupsList).click(() => {
+                    ChatMsgAdapter.switchTo(name, "single")
+                })
+            }
         })
     }
     /**
